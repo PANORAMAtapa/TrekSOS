@@ -1,0 +1,28 @@
+Trek Name: Kedarkantha Winter Trek
+Region: Uttarakhand (Govind Pashu Vihar National Park)
+Max Altitude: 3810 m (12500 ft)
+Grade: Easy to Moderate
+Duration: 5 Days
+Total Distance: 20 km
+Best Season: December to April (Snow Summit)
+Starting Point: Sankri
+Ending Point: Sankri
+
+Overview:
+Kedarkantha is India's most popular winter summit trek. Famous for knee-deep snow, campsites surrounded by giant pines, the serene frozen Juda Ka Talab lake, and an exhilarating 360-degree summit sunrise viewing 13 Himalayan peaks including Swargarohini, Black Peak, and Bandarpoonch.
+
+Trail Route Coordinates:
+[
+  {"name": "Sankri Base Village", "lat": 31.0770, "lng": 78.1810, "alt": 1950, "day": 1},
+  {"name": "Juda Ka Talab (Frozen Alpine Lake)", "lat": 31.0520, "lng": 78.2050, "alt": 2770, "day": 2},
+  {"name": "Kedarkantha Basecamp (Snow Meadow)", "lat": 31.0330, "lng": 78.2280, "alt": 3400, "day": 3},
+  {"name": "Kedarkantha Peak Summit (360 Sunrise)", "lat": 31.0230, "lng": 78.2510, "alt": 3810, "day": 4},
+  {"name": "Hargaon Forest Camp", "lat": 31.0420, "lng": 78.2160, "alt": 2650, "day": 4},
+  {"name": "Sankri Return", "lat": 31.0770, "lng": 78.1810, "alt": 1950, "day": 5}
+]
+
+Points of Interest:
+- Type: Cafe | Name: Sankri Him-Cafe & Bakery | Lat: 31.0775 | Lng: 78.1820 | Desc: Warm apple pies, filtered coffee, and trail snack supplies.
+- Type: Sightseeing | Name: Juda Ka Talab Frozen View | Lat: 31.0525 | Lng: 78.2060 | Desc: Legendary pine-flanked lake that completely freezes in peak winter.
+- Type: Dhaba | Name: Hargaon Tea & Maggi Shack | Lat: 31.0425 | Lng: 78.2170 | Desc: Wood stove, hot ginger tea, and fried noodles.
+- Type: Spring | Name: Pine Forest Cold Spring | Lat: 31.0650 | Lng: 78.1920 | Desc: Pure filtered spring through deodar roots.

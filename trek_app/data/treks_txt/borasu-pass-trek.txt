@@ -1,0 +1,31 @@
+Trek Name: Borasu Pass Trek
+Region: Uttarakhand to Himachal Pradesh (Tons Valley to Baspa Valley)
+Max Altitude: 5450 m (17880 ft)
+Grade: Challenging - High Altitude Pass
+Duration: 8 Days
+Total Distance: 67 km
+Best Season: May to June, September to October
+Starting Point: Sankri / Taluka
+Ending Point: Chitkul, Kinnaur
+
+Overview:
+Borasu Pass is an ancient trade route connecting Har Ki Dun valley in Uttarakhand with the Kinnaur valley of Himachal Pradesh. Trekkers cross dramatic glaciers, moraines, high alpine meadows (bugyals), and cross near the Indo-Tibetan border. Known for high altitude adventure, hanging glaciers, and majestic views of Swargarohini and Bandarpoonch peaks.
+
+Trail Route Coordinates:
+[
+  {"name": "Taluka Basecamp", "lat": 31.0625, "lng": 78.3302, "alt": 2100, "day": 1},
+  {"name": "Seema Camp (Dhaba & River)", "lat": 31.0910, "lng": 78.3980, "alt": 2600, "day": 2},
+  {"name": "Har Ki Dun Junction", "lat": 31.1340, "lng": 78.4350, "alt": 3500, "day": 3},
+  {"name": "Rathatho Alpine Camp", "lat": 31.1680, "lng": 78.4720, "alt": 4200, "day": 4},
+  {"name": "Borasu Basecamp (Glacier Moraine)", "lat": 31.1920, "lng": 78.4980, "alt": 4900, "day": 5},
+  {"name": "Borasu Pass Summit", "lat": 31.2150, "lng": 78.5150, "alt": 5450, "day": 6},
+  {"name": "Bonga Camp (Himachal)", "lat": 31.2400, "lng": 78.5450, "alt": 4000, "day": 7},
+  {"name": "Chitkul Village (The Last Indian Village)", "lat": 31.3500, "lng": 78.4380, "alt": 3450, "day": 8}
+]
+
+Points of Interest:
+- Type: Cafe | Name: Sankri Village Dosa & Maggi Point | Lat: 31.0620 | Lng: 78.3310 | Desc: Hot local tea, steaming Maggi, and satellite communication point.
+- Type: Sightseeing | Name: Swargarohini Massif Viewpoint | Lat: 31.1410 | Lng: 78.4420 | Desc: Legendary staircase to heaven according to Mahabharata lore.
+- Type: Spring | Name: Supin River Fresh Glacier Spring | Lat: 31.1005 | Lng: 78.4110 | Desc: Pristine natural glacial water refill spot.
+- Type: Dhaba | Name: Seema Traditional Chai Stall | Lat: 31.0915 | Lng: 78.3990 | Desc: Wood-fired black tea and roasted corn.
+- Type: Sightseeing | Name: Chitkul Riverbed View | Lat: 31.3510 | Lng: 78.4390 | Desc: Beautiful turquoise Baspa river with Tibetan architecture.

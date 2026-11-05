@@ -1,0 +1,29 @@
+Trek Name: Roopkund Mystery Lake Trek
+Region: Uttarakhand (Chamoli District, Garhwal)
+Max Altitude: 4790 m (15700 ft)
+Grade: Moderate to Difficult
+Duration: 6 Days
+Total Distance: 53 km
+Best Season: May to June, September to October
+Starting Point: Lohajung
+Ending Point: Lohajung
+
+Overview:
+Roopkund is legendary for high altitude meadows of Ali and Bedni Bugyal, offering unmatched views of Mt. Trishul and Nanda Ghunti. At the top lies the high-altitude glacial lake shrouded in mystery, surrounded by snow ridges and deep ridges.
+
+Trail Route Coordinates:
+[
+  {"name": "Lohajung Village", "lat": 30.0810, "lng": 79.5780, "alt": 2300, "day": 1},
+  {"name": "Didna Forest Village", "lat": 30.1220, "lng": 79.6100, "alt": 2450, "day": 2},
+  {"name": "Ali Bugyal (Endless Alpine Meadow)", "lat": 30.1650, "lng": 79.6450, "alt": 3400, "day": 3},
+  {"name": "Bedni Bugyal Ridge", "lat": 30.1890, "lng": 79.6700, "alt": 3550, "day": 3},
+  {"name": "Ghora Lotani (Rocky Moraine)", "lat": 30.2150, "lng": 79.6990, "alt": 3800, "day": 4},
+  {"name": "Bhagwabasa Snow Cave Camp", "lat": 30.2450, "lng": 79.7280, "alt": 4300, "day": 5},
+  {"name": "Roopkund Glacial Lake", "lat": 30.2640, "lng": 79.7390, "alt": 4790, "day": 5}
+]
+
+Points of Interest:
+- Type: Cafe | Name: Lohajung Mountain View Cafe | Lat: 30.0815 | Lng: 79.5790 | Desc: Good Wi-Fi, momos, pancake breakfast, and rental equipment.
+- Type: Sightseeing | Name: Mt. Trishul 7120m Panorama Point | Lat: 30.1900 | Lng: 79.6720 | Desc: Direct sheer wall view of Mt. Trishul right from Bedni Bugyal.
+- Type: Dhaba | Name: Bedni Bugyal Forest Shepherds Stall | Lat: 30.1880 | Lng: 79.6680 | Desc: Hot buffalo milk, roasted pahadi potatoes, and lemon tea.
+- Type: Spring | Name: Bhagwabasa Glacial Melt Spring | Lat: 30.2460 | Lng: 79.7290 | Desc: Sub-zero meltwater stream.

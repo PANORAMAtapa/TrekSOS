@@ -1,0 +1,7 @@
+.vscode/
+edge_temp_profile/
+__pycache__/
+*.pyc
+tempCodeRunnerFile.*
+Practice.java
+*.exe

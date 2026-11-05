@@ -1,0 +1,28 @@
+Trek Name: Hampta Pass Trek
+Region: Himachal Pradesh (Kullu to Spiti Valley)
+Max Altitude: 4287 m (14065 ft)
+Grade: Moderate
+Duration: 5 Days
+Total Distance: 35 km
+Best Season: June to September
+Starting Point: Jobra (Manali)
+Ending Point: Chatru (Lahaul & Spiti)
+
+Overview:
+Hampta Pass is famous for dramatic landscape shifts: transitioning from lush pine forests of Kullu valley to the stark desert landscape of Spiti. Crossing river streams, flower-laden meadows at Jwara and Balu Ka Ghera, culminating in the pass crossing and a drive to the turquoise Chandra Taal lake.
+
+Trail Route Coordinates:
+[
+  {"name": "Jobra Basecamp", "lat": 32.2355, "lng": 77.2625, "alt": 2800, "day": 1},
+  {"name": "Chika Riverside Meadow", "lat": 32.2510, "lng": 77.2950, "alt": 3100, "day": 2},
+  {"name": "Balu Ka Ghera (Valley of Sand)", "lat": 32.2780, "lng": 77.3320, "alt": 3750, "day": 3},
+  {"name": "Hampta Pass Summit & Ridge", "lat": 32.3020, "lng": 77.3680, "alt": 4287, "day": 4},
+  {"name": "Shea Goru Oasis", "lat": 32.3210, "lng": 77.3910, "alt": 3900, "day": 4},
+  {"name": "Chatru Roadhead & Chandra Taal", "lat": 32.3450, "lng": 77.4190, "alt": 3300, "day": 5}
+]
+
+Points of Interest:
+- Type: Cafe | Name: Jobra Forest Cafe & Momos | Lat: 32.2360 | Lng: 77.2635 | Desc: Fresh steamed momos, ginger honey tea, and trekking pole rentals.
+- Type: Dhaba | Name: Chatru Moon-Land Dhaba | Lat: 32.3460 | Lng: 77.4200 | Desc: Famous high-altitude Rajma Chawal served hot to weary trekkers.
+- Type: Sightseeing | Name: Indrasan Peak Viewpoint | Lat: 32.2810 | Lng: 77.3350 | Desc: Crystal view of Mt. Indrasan and Deo Tibba snowfields.
+- Type: Spring | Name: Rani Nallah Natural Glacial Spring | Lat: 32.2600 | Lng: 77.3080 | Desc: Clear sweet mineral-rich drinking water.

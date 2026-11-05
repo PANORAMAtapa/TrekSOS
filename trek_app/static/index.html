@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrekQuest - Smart Hiking & Squad Trail Navigator</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- App Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">🏔️</div>
+            <div>
+                <span class="brand-title">TrekQuest</span>
+                <span class="brand-sub">Smart Mountain GPS & Squad Lobby</span>
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <!-- Active Squad Room Widget -->
+            <div class="squad-chip" id="navSquadChip" onclick="openSquadModal()">
+                <span class="pulse-dot"></span>
+                <span>Squad: <strong id="navRoomCodeDisplay">SUMMIT-7</strong></span>
+                <span class="badge-role" id="navUserRole">Lead Nav</span>
+            </div>
+
+            <!-- Offline Cache Indicator -->
+            <button class="cache-btn" id="btnDownloadOffline" title="Download trail tiles for offline use">
+                <span>📥</span> <span id="offlineBtnText">Offline Pack</span>
+            </button>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Demo Simulator Button -->
+            <button class="demo-btn" id="btnSimulate" title="Simulate live squad movement on trail (For Project Viva Demo)">
+                <span>🚶‍♂️</span> Simulate Live Walk
+            </button>
+
+            <!-- User Profile Chip -->
+            <div class="user-chip">
+                <div class="avatar" id="navUserAvatar">A</div>
+                <div class="user-info">
+                    <span class="user-name" id="navUserName">Arjun V.</span>
+                    <span class="user-status">Online (GPS Ready)</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="main-layout">
+
+        <!-- SECTION 1: POPULAR & RECOMMENDED HIKING TRAILS DISCOVERY BAR -->
+        <section class="discovery-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">🔥 Popular & Recommended Hiking Trails</h2>
+                    <p class="section-desc">Extracted from Kaggle 250 Himalayan Trek dataset. Tap any trail to launch the interactive map and squad navigation.</p>
+                </div>
+                
+                <!-- Filter Pills -->
+                <div class="filter-pills" id="filterPillsContainer">
+                    <button class="pill active" data-filter="all">All Trails</button>
+                    <button class="pill" data-filter="high-pass">5,000m+ High Passes</button>
+                    <button class="pill" data-filter="snow">Winter & Snow</button>
+                    <button class="pill" data-filter="moderate">Moderate Classics</button>
+                </div>
+            </div>
+
+            <!-- Horizontal Scrollable Cards List -->
+            <div class="trail-cards-carousel" id="popularTrailsList">
+                <div class="loading-spinner">Loading curated Kaggle trails...</div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MAP & LIVE TRAIL DASHBOARD -->
+        <div class="trail-workspace">
+            
+            <!-- LEFT WORKSPACE: FULL FUNCTIONAL MAP -->
+            <div class="map-container-box">
+                <div class="map-top-bar">
+                    <div class="map-title-info">
+                        <span class="trail-active-tag">ACTIVE TRAIL</span>
+                        <h3 id="mapTrailTitle">Borasu Pass Trek (5,450 m)</h3>
+                        <span class="map-trail-stats" id="mapTrailSubtitle">67 km • 8 Days • Tons Valley to Baspa Valley</span>
+                    </div>
+
+                    <div class="map-quick-tools">
+                        <!-- POI Filter Toggles -->
+                        <div class="poi-toggles">
+                            <label class="toggle-pill active" id="toggleCafes">
+                                <input type="checkbox" checked onchange="togglePoiLayer('cafe')">
+                                <span>☕ Cafes & Dhabas</span>
+                            </label>
+                            <label class="toggle-pill active" id="toggleViews">
+                                <input type="checkbox" checked onchange="togglePoiLayer('sightseeing')">
+                                <span>🌄 Viewpoints</span>
+                            </label>
+                            <label class="toggle-pill active" id="toggleSprings">
+                                <input type="checkbox" checked onchange="togglePoiLayer('spring')">
+                                <span>💧 Water Springs</span>
+                            </label>
+                        </div>
+
+                        <!-- SOS Emergency Ping -->
+                        <button class="sos-btn" id="btnSOS" title="Broadcast Emergency SOS to all teammates">
+                            🚨 SOS Ping
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Leaflet Map Canvas -->
+                <div id="map" class="map-canvas"></div>
+
+                <!-- Squad Radar HUD (Bottom Floating On Map) -->
+                <div class="map-hud-overlay" id="squadRadarHud">
+                    <div class="hud-header">
+                        <span class="hud-title">📡 Squad Distance Radar</span>
+                        <span class="hud-status" id="squadRadarStatus">4 Teammates Synced</span>
+                    </div>
+                    <div class="hud-members" id="squadHudMembers">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT WORKSPACE: TRAIL DETAILS, SHERPA, PERMIT & REVIEWS -->
+            <aside class="sidebar-info-box">
+
+                <!-- TABS FOR SIDEBAR -->
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" onclick="switchSidebarTab('overview')">Trail Info</button>
+                    <button class="tab-btn" onclick="switchSidebarTab('squad')">Squad Room</button>
+                    <button class="tab-btn" onclick="switchSidebarTab('permit')">Govt Permit</button>
+                    <button class="tab-btn" onclick="switchSidebarTab('reviews')">Reviews (<span id="reviewsCountBadge">3</span>)</button>
+                </div>
+
+                <!-- TAB 1: OVERVIEW & SHERPA -->
+                <div class="tab-content active" id="tabOverview">
+                    <!-- Key Altitude & Distance Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Max Elevation</span>
+                            <span class="stat-val" id="statElevation">5,450 m</span>
+                            <span class="stat-sub">17,880 ft Peak</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Difficulty</span>
+                            <span class="stat-val diff-tag" id="statDifficulty">Challenging</span>
+                            <span class="stat-sub">Alpine Moraine</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Total Distance</span>
+                            <span class="stat-val" id="statDistance">67 km</span>
+                            <span class="stat-sub">8 Days Crossing</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Best Window</span>
+                            <span class="stat-val" id="statSeason">May - Oct</span>
+                            <span class="stat-sub">Pre/Post Monsoon</span>
+                        </div>
+                    </div>
+
+                    <!-- Trail Description (From Kaggle .txt) -->
+                    <div class="info-card">
+                        <h4 class="card-heading">📖 Trail Briefing</h4>
+                        <p class="trail-overview-text" id="trailOverviewText">
+                            Connecting Har Ki Dun valley with Kinnaur, crossing glacial moraines and high passes near the Indo-Tibetan border.
+                        </p>
+                    </div>
+
+                    <!-- Auto-Assigned Sherpa / Guide Connect -->
+                    <div class="info-card sherpa-card">
+                        <div class="sherpa-header">
+                            <div class="sherpa-avatar">🏔️</div>
+                            <div>
+                                <span class="sherpa-tag">AUTO-ASSIGNED ALPINE GUIDE</span>
+                                <h4 class="sherpa-name" id="sherpaName">Tenzing Dorje</h4>
+                                <span class="sherpa-exp" id="sherpaExp">14 Yrs Exp • 4.96 ★ Rating</span>
+                            </div>
+                        </div>
+                        <div class="sherpa-badge" id="sherpaBadge">
+                            🏅 UIAA Certified Lead Guide & High Altitude First Responder
+                        </div>
+                        <div class="sherpa-meta">
+                            <span>🗣️ <strong id="sherpaLang">Hindi, English, Garhwali, Tibetan</strong></span>
+                        </div>
+                        <div class="sherpa-actions">
+                            <button class="sherpa-call-btn" onclick="alert('Connecting to Sherpa VHF Channel 144.800 MHz and Phone: ' + document.getElementById('sherpaPhone').innerText)">
+                                📞 Radio / Call Guide
+                            </button>
+                            <span id="sherpaPhone" style="display:none;">+91 98765-43210</span>
+                        </div>
+                    </div>
+
+                    <!-- Cafes and Dhabas Near Trail List -->
+                    <div class="info-card">
+                        <h4 class="card-heading">☕ Real-Time Mountain Dhabas & POIs</h4>
+                        <div class="poi-list-mini" id="poiMiniList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: MULTIPLAYER SQUAD ROOM LOBBY -->
+                <div class="tab-content" id="tabSquad">
+                    <div class="info-card">
+                        <div class="squad-lobby-box">
+                            <span class="squad-label">ACTIVE SQUAD ROOM CODE</span>
+                            <div class="room-code-display" id="lobbyRoomCode">SUMMIT-7</div>
+                            <p class="room-sub">Share this code with your trekking friends so they can enter your live map lobby!</p>
+                            
+                            <div class="room-btn-group">
+                                <button class="btn-primary" onclick="openCreateRoomModal()">Create New Room</button>
+                                <button class="btn-secondary" onclick="openJoinRoomModal()">Join Another Room</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h4 class="card-heading">👥 Connected Trekkers (<span id="squadCountLabel">4</span>)</h4>
+                        <div class="squad-list" id="squadMembersList">
+                            <!-- Populated dynamically with live battery and roles -->
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h4 class="card-heading">⚙️ Geolocation Broadcast</h4>
+                        <div class="gps-toggle-row">
+                            <div>
+                                <strong>Broadcast My Live Phone GPS</strong>
+                                <p class="subtext">Uses browser HTML5 Geolocation API</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="gpsLiveToggle" onchange="toggleRealGps(this.checked)">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="gps-toggle-row" style="margin-top:10px;">
+                            <div>
+                                <strong>Simulate Squad Walking Pace</strong>
+                                <p class="subtext">Nudges markers along trail for demo</p>
+                            </div>
+                            <button class="btn-secondary-sm" onclick="triggerSimulationStep()">Step Forward</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PROTOTYPE GOVERNMENT PERMISSION SECTION -->
+                <div class="tab-content" id="tabPermit">
+                    <div class="info-card permit-official-card">
+                        <div class="permit-stamp">APPROVED</div>
+                        <div class="permit-header">
+                            <span class="permit-gov-title">MINISTRY OF ENVIRONMENT, FOREST & CLIMATE CHANGE</span>
+                            <h3 class="permit-heading">Protected Area Sanctuary E-Permit</h3>
+                            <span class="permit-division">State Eco-Tourism & Himalayan Biodiversity Wing</span>
+                        </div>
+
+                        <div class="permit-details-grid">
+                            <div class="permit-row">
+                                <span class="p-key">Permit Reference:</span>
+                                <span class="p-val mono" id="permitRefCode">IND-FOR-142-CLR</span>
+                            </div>
+                            <div class="permit-row">
+                                <span class="p-key">Protected Sanctuary:</span>
+                                <span class="p-val" id="permitArea">Govind National Park Eco-Sensitive Sanctuary</span>
+                            </div>
+                            <div class="permit-row">
+                                <span class="p-key">Authorization Status:</span>
+                                <span class="p-val status-green">🟢 CLEARANCE GRANTED (ACTIVE)</span>
+                            </div>
+                            <div class="permit-row">
+                                <span class="p-key">Today's Eco-Quota:</span>
+                                <span class="p-val" id="permitQuota">16 of 35 Slots Allocated</span>
+                            </div>
+                            <div class="permit-row">
+                                <span class="p-key">Eco-Cess / Swachh Tax:</span>
+                                <span class="p-val">Paid ₹350 (Clean Himalayas Pledge Verified)</span>
+                            </div>
+                            <div class="permit-row">
+                                <span class="p-key">Emergency VHF Band:</span>
+                                <span class="p-val mono" id="permitRadio">144.800 MHz (Forest Post)</span>
+                            </div>
+                        </div>
+
+                        <div class="permit-notice">
+                            <strong>Note for Prototype Display:</strong> This auto-clearance pass confirms trekker identity verification, emergency beacon registration, and trail environmental clearance for protected wilderness regions.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: REVIEWS & TRAIL CONDITIONS -->
+                <div class="tab-content" id="tabReviews">
+                    <div class="info-card">
+                        <h4 class="card-heading">✍️ Report Trail Condition & Review</h4>
+                        <form id="reviewForm" onsubmit="handleReviewSubmit(event)">
+                            <div class="form-group">
+                                <label>Your Name</label>
+                                <input type="text" id="reviewAuthor" class="form-input" placeholder="e.g. Maya Patel" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <select id="reviewRating" class="form-input">
+                                    <option value="5">★★★★★ (5/5 Outstanding)</option>
+                                    <option value="4">★★★★☆ (4/5 Great)</option>
+                                    <option value="3">★★★☆☆ (3/5 Moderate)</option>
+                                    <option value="2">★★☆☆☆ (2/5 Tough / Muddy)</option>
+                                    <option value="1">★☆☆☆☆ (1/5 Poor condition)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Live Trail Condition Notice</label>
+                                <input type="text" id="reviewCondition" class="form-input" placeholder="e.g. Fresh snow on pass, stream crossing clear" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Trekker Experience</label>
+                                <textarea id="reviewComment" class="form-input" rows="3" placeholder="Share your feedback, camp tips, or advice..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: 100%;">Submit Live Feedback</button>
+                        </form>
+                    </div>
+
+                    <div class="reviews-feed" id="reviewsContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+    </main>
+
+    <!-- CREATE ROOM MODAL -->
+    <div class="modal-backdrop" id="createRoomModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🏕️ Create Trek Squad Room</h3>
+                <button class="modal-close" onclick="closeModal('createRoomModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint">A unique 6-digit room code will be generated like a game lobby. Friends can join with this code to share live GPS coordinates.</p>
+                <div class="form-group">
+                    <label>Leader Name</label>
+                    <input type="text" id="createLeaderName" class="form-input" value="Arjun Verma">
+                </div>
+                <div class="form-group">
+                    <label>Squad Role</label>
+                    <select id="createLeaderRole" class="form-input">
+                        <option value="Lead Navigator">🧭 Lead Navigator (Pace Maker)</option>
+                        <option value="Scout">📸 Scout / Route Finder</option>
+                        <option value="Medic">🩺 Medic / First Aid</option>
+                        <option value="Sweeper (Rear Guard)">🛡️ Sweeper (Rear Guard / Safety)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('createRoomModal')">Cancel</button>
+                <button class="btn-primary" onclick="submitCreateRoom()">Launch Squad Room</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOIN ROOM MODAL -->
+    <div class="modal-backdrop" id="joinRoomModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔑 Enter Squad Room Code</h3>
+                <button class="modal-close" onclick="closeModal('joinRoomModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Room Code (e.g. SUMMIT-7)</label>
+                    <input type="text" id="joinRoomCode" class="form-input code-input" placeholder="SUMMIT-7" uppercase required>
+                </div>
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="joinUserName" class="form-input" placeholder="e.g. Rohan Mehra" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Squad Role</label>
+                    <select id="joinUserRole" class="form-input">
+                        <option value="Explorer">🧗 Explorer</option>
+                        <option value="Scout">📸 Scout / Photographer</option>
+                        <option value="Medic">🩺 Medic</option>
+                        <option value="Sweeper (Rear Guard)">🛡️ Sweeper (Rear Guard)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('joinRoomModal')">Cancel</button>
+                <button class="btn-primary" onclick="submitJoinRoom()">Join Squad</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="/static/js/map.js"></script>
+    <script src="/static/js/squad.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

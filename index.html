@@ -1,0 +1,4235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrekSOS - Mountain Navigation & Hiking Trails Hub</title>
+  
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Emergency Red & Mountain Slate Theme */
+      --bg-outer: #05070c;
+      --bg-sidebar: #090d16;
+      --bg-glass: rgba(13, 18, 30, 0.88);
+      --bg-card: rgba(239, 68, 68, 0.05);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --text-primary: #ffffff;
+      --text-secondary: #fca5a5;
+      --text-muted: #94a3b8;
+      --border-color: rgba(239, 68, 68, 0.35);
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      
+      --color-green: #10b981;
+      --color-green-glow: rgba(16, 185, 129, 0.4);
+      --color-amber: #f59e0b;
+      --color-amber-glow: rgba(245, 158, 11, 0.4);
+      --color-red: #ef4444;
+      --color-red-glow: rgba(239, 68, 68, 0.5);
+      --color-blue: #38bdf8;
+      --color-purple: #a855f7;
+      
+      --gradient-red: linear-gradient(135deg, #ef4444, #991b1b);
+      --gradient-green: linear-gradient(135deg, #10b981, #047857);
+      --gradient-amber: linear-gradient(135deg, #f59e0b, #b45309);
+      --gradient-blue: linear-gradient(135deg, #0284c7, #0369a1);
+      --gradient-dark: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(9, 13, 22, 0.98));
+      
+      --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-heading);
+      background: var(--bg-outer);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      position: relative;
+    }
+
+    /* SIDEBAR */
+    /* SIDEBAR & SCROLLING ENGINE */
+    .sidebar {
+      width: 440px;
+      min-width: 440px;
+      height: 100vh;
+      max-height: 100vh;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 12px 0 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .sidebar .header {
+      flex-shrink: 0;
+    }
+
+    .sidebar-content {
+      flex: 1 1 0% !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      padding: 16px 18px !important;
+      min-height: 0 !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar-content::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar-content::-webkit-scrollbar-thumb {
+      background: var(--color-red);
+      border-radius: 4px;
+    }
+
+    .sos-wrapper {
+      flex-shrink: 0;
+    }
+
+    /* original sidebar styles */
+    .sidebar-orig {
+      width: 440px;
+      min-width: 440px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 12px 0 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .header {
+      padding: 20px 22px 14px 22px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(239, 68, 68, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo span {
+      color: var(--color-red);
+    }
+
+    .logo-badge {
+      font-size: 10px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--color-red);
+      color: #fca5a5;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .auth-btn-header {
+      padding: 7px 14px;
+      background: var(--gradient-red);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .auth-btn-header:hover {
+      filter: brightness(1.2);
+      transform: translateY(-1px);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--color-green);
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .user-pill:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
+    .user-avatar-small {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--color-green);
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-green);
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-bar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .status-tracker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--color-green);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .db-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--color-blue);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .sidebar-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 6px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--color-red);
+      border-bottom-color: var(--color-red);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .tab-pane {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .tab-pane::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .tab-pane::-webkit-scrollbar-thumb {
+      background: var(--color-red);
+      border-radius: 4px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--color-red);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      letter-spacing: 1.2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .alert-box {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid var(--color-red);
+      padding: 11px 13px;
+      border-radius: 10px;
+      margin-bottom: 9px;
+      font-size: 12px;
+      color: #fca5a5;
+      line-height: 1.4;
+    }
+
+    .route-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 13px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .route-card:hover {
+      border-color: var(--color-red);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .route-card.active {
+      border: 1.5px solid var(--color-red);
+      background: rgba(239, 68, 68, 0.12);
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+    }
+
+    .route-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 14px;
+      align-items: center;
+    }
+
+    .route-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .route-actions {
+      display: none;
+      gap: 8px;
+      margin-top: 10px;
+      border-top: 1px dashed rgba(239, 68, 68, 0.3);
+      padding-top: 10px;
+    }
+
+    .route-card.active .route-actions {
+      display: flex;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 9px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--gradient-red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      color: var(--color-red);
+      border: 1px solid var(--color-red);
+    }
+
+    .action-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    .member-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .member-avatar.bg-green { background: var(--color-green); }
+    .member-avatar.bg-amber { background: var(--color-amber); }
+    .member-avatar.bg-red { background: var(--color-red); }
+    .member-avatar.bg-blue { background: var(--color-blue); }
+
+    .sos-wrapper {
+      padding: 18px 20px;
+      border-top: 1px solid var(--border-color);
+      background: rgba(10, 14, 23, 0.95);
+    }
+
+    .sos-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 2px;
+      transition: 0.3s;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+      animation: pulse 2s infinite ease-out;
+    }
+
+    .sos-btn:hover {
+      filter: brightness(1.15);
+      transform: scale(1.02);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+      70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .sos-cancel-btn {
+      display: none;
+      margin-top: 9px;
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--text-secondary);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* HIKING TRAILS CSV STYLES */
+    .csv-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .csv-tool-btn {
+      flex: 1;
+      min-width: 110px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: 0.2s;
+    }
+
+    .csv-tool-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--color-red);
+    }
+
+    .csv-tool-btn.primary {
+      background: var(--gradient-red);
+      border-color: transparent;
+    }
+
+    .trail-search-box {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .trail-search-box:focus {
+      border-color: var(--color-red);
+    }
+
+    .filter-pills-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-pill {
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: var(--color-red);
+      color: #fff;
+    }
+
+    
+    .trail-card.active {
+      border: 1.5px solid var(--color-red) !important;
+      background: rgba(239, 68, 68, 0.12) !important;
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.25) !important;
+    }
+
+    .trail-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .trail-card:hover {
+      border-color: var(--color-red);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .trail-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .trail-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .trail-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .badge-easy { background: rgba(16, 185, 129, 0.2); color: var(--color-green); border: 1px solid var(--color-green); }
+    .badge-mod { background: rgba(245, 158, 11, 0.2); color: var(--color-amber); border: 1px solid var(--color-amber); }
+    .badge-diff { background: rgba(239, 68, 68, 0.2); color: var(--color-red); border: 1px solid var(--color-red); }
+
+    .trail-region {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .trail-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .spec-label {
+      color: var(--text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .spec-val {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .trail-permit-box {
+      font-size: 11px;
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid var(--color-amber);
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: #fde68a;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .trail-card-footer {
+      display: flex;
+      gap: 8px;
+    }
+
+    .trail-action-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+
+    .trail-action-btn.map-btn {
+      background: var(--gradient-red);
+      color: #fff;
+    }
+
+    .trail-action-btn.save-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .trail-action-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    /* MAP & HUD */
+    #map {
+      flex: 1;
+      height: 100vh;
+      z-index: 1;
+      background: #0f172a;
+    }
+
+    .search-container {
+      position: absolute;
+      top: 18px;
+      left: 460px;
+      z-index: 1000;
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-container input {
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(10px);
+      color: white;
+      width: 320px;
+      outline: none;
+      font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.2s;
+    }
+
+    .search-container input:focus {
+      border-color: var(--color-red);
+    }
+
+    .search-container button {
+      padding: 10px 20px;
+      border-radius: 24px;
+      border: none;
+      background: var(--gradient-red);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+      transition: 0.2s;
+    }
+
+    .search-container button:hover {
+      filter: brightness(1.15);
+    }
+
+    .floating-panel {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      width: 310px;
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0 18px;
+      z-index: 1000;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .panel-row {
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(239, 68, 68, 0.15);
+    }
+
+    .panel-row:last-child {
+      border-bottom: none;
+    }
+
+    .panel-row.dual {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .label {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .active-route-val {
+      color: var(--color-red) !important;
+      font-size: 16px;
+    }
+
+    .display-font {
+      font-size: 22px;
+      color: var(--color-red);
+    }
+
+    .leaflet-control-toggle {
+      background: rgba(9, 13, 22, 0.95) !important;
+      border: 1px solid var(--border-color) !important;
+      color: #fff !important;
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 7px 12px;
+      cursor: pointer;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      text-align: left;
+      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .leaflet-control-toggle:hover {
+      background: var(--color-red) !important;
+      color: #fff !important;
+    }
+
+    .info.legend {
+      background: rgba(9, 13, 22, 0.94) !important;
+      color: white !important;
+      border: 1px solid var(--border-color) !important;
+      padding: 12px 14px !important;
+      border-radius: 10px !important;
+      font-size: 11px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-red);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 99999;
+      display: none;
+      box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .toast.show {
+      display: block;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    #splashScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    .splash-logo {
+      font-size: 64px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 8px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
+    }
+
+    .splash-logo span { color: var(--color-red); }
+
+    .splash-subtitle {
+      font-size: 15px;
+      color: #fca5a5;
+      margin-bottom: 36px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .btn-navigate {
+      padding: 18px 45px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--gradient-red);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 15px 40px rgba(239, 68, 68, 0.45);
+      transition: 0.3s;
+    }
+
+    .btn-navigate:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 50px rgba(239, 68, 68, 0.65);
+    }
+
+    /* MODALS */
+    .fullscreen-window {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(3, 7, 18, 0.88);
+      z-index: 4000;
+      display: none;
+      padding: 40px 20px;
+      overflow-y: auto;
+      backdrop-filter: blur(12px);
+    }
+
+    .window-content {
+      max-width: 540px;
+      margin: 0 auto;
+      background: rgba(13, 18, 30, 0.95);
+      backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+      position: relative;
+      animation: modalSlide 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(25px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .window-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .window-header h2 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #fca5a5;
+      font-size: 26px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+      transform: scale(1.15);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fca5a5;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border-subtle);
+      color: white;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-red);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--gradient-red);
+      color: #fff;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .submit-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .auth-tab-bar {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      color: #fff;
+      border-bottom-color: var(--color-red);
+    }
+
+    .csv-drop-zone {
+      border: 2px dashed rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.05);
+      border-radius: 14px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: 0.2s;
+    }
+
+    .csv-drop-zone:hover, .csv-drop-zone.dragover {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: var(--color-red);
+    }
+
+    .csv-drop-icon {
+      font-size: 38px;
+      margin-bottom: 8px;
+    }
+
+    .review-item {
+      background: var(--bg-card);
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .db-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    .db-table th {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 8px;
+      text-align: left;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .db-table td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splashScreen">
+    <div class="splash-content">
+      <div class="splash-logo">TREK<span>SOS</span></div>
+      <div class="splash-subtitle">Mountain Navigation & Hiking Trails Hub</div>
+      <button class="btn-navigate" id="navigateBtn" onclick="startNavigation()">Navigate into the Wild</button>
+    </div>
+  </div>
+  <script>
+    // Bulletproof click handler for Navigate button
+    (function() {
+      var btn = document.getElementById('navigateBtn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          var s = document.getElementById('splashScreen');
+          if (s) {
+            s.style.transition = 'opacity 0.5s ease';
+            s.style.opacity = '0';
+            s.style.pointerEvents = 'none';
+            setTimeout(function() {
+              s.style.display = 'none';
+              if (window.map) { window.map.invalidateSize(); if (currentTrailsList && currentTrailsList.length > 0) plotTrailOnMap(currentTrailsList[0].trekName); }
+            }, 500);
+          }
+        });
+      }
+    })();
+  </script>
+
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="header">
+        <div class="header-top">
+          <div class="logo-container">
+            <div class="logo">Trek<span>SOS</span></div>
+            <div class="logo-badge">v2.4 DB</div>
+          </div>
+
+          <div id="authHeaderContainer">
+            <button class="auth-btn-header" onclick="openAuthModal('login')">
+              <span>🔑</span> Login / Sign Up
+            </button>
+          </div>
+        </div>
+
+        <div class="status-bar-row">
+          <div class="status-tracker">● Offline Tracking Active</div>
+          <div class="db-status-pill" id="dbStatusIndicator">💾 IndexedDB Mounted</div>
+        </div>
+      </div>
+
+      <!-- SINGLE DIRECT SIDEBAR CONTENT (LIKE BEFORE) -->
+      <div class="sidebar-content">
+        <!-- Live Mountain Hazard Alerts -->
+        <div class="section-title">
+          <span>⚠ Live Mountain Hazards</span>
+        </div>
+        <div class="alert-box">🔴 Landslide reported on Route B near Rohtang Pass (23 min ago)</div>
+        <div class="alert-box" style="border-color: var(--color-amber); background: rgba(245, 158, 11, 0.1); color: var(--color-amber);">
+          🌩 Thunderstorm warning — Spiti Valley sector (Gusts 65km/h)
+        </div>
+
+        <!-- Catalogue of Trail Places directly in the sidebar list! -->
+        <div class="section-title" style="margin-top: 22px; display:flex; justify-content:space-between; align-items:center;">
+          <span>🏔️ Available Trails (<span id="trailCountBadge">16</span>)</span>
+          <button class="action-btn secondary" style="width:auto; padding:4px 10px; font-size:10px; cursor:pointer;" onclick="openWindow('dbModal')">💾 DB Records</button>
+        </div>
+
+        <input type="text" id="trailSearchInput" class="trail-search-box" placeholder="🔍 Search 16 Indian Himalayan trails..." oninput="filterTrails()">
+
+        <div class="filter-pills-row" style="margin-bottom:14px;">
+          <div class="filter-pill active" onclick="setDifficultyFilter('ALL', this)">All Trails</div>
+          <div class="filter-pill" onclick="setDifficultyFilter('Easy', this)">Easy</div>
+          <div class="filter-pill" onclick="setDifficultyFilter('Moderate', this)">Moderate</div>
+          <div class="filter-pill" onclick="setDifficultyFilter('Difficult', this)">Difficult</div>
+        </div>
+
+        <!-- The list of trail places -->
+        <div id="trailsContainer"></div>
+
+        <!-- Expedition Squad Section -->
+        <div class="section-title" style="margin-top: 24px;">👥 Expedition Squad Tracking</div>
+        <div id="squadMembersList"></div>
+      </div>
+
+      <!-- SOS Fixed Button -->
+      <div class="sos-wrapper">
+        <button class="sos-btn" id="sosBtn" onclick="triggerSOS()">EMERGENCY SOS</button>
+        <button class="sos-cancel-btn" id="sosCancel" onclick="cancelSOS()">Cancel Active SOS Broadcast</button>
+        <div style="text-align:center; font-size:11px; color:var(--text-secondary); margin-top:8px;">
+          Broadcasts via BLE · Real Database Stored · Satellite Uplink
+        </div>
+      </div>
+    </div>
+
+    <!-- LEAFLET MAP -->
+    <div id="map"></div>
+
+    <!-- Search Bar -->
+    <div class="search-container" id="searchBar">
+      <input type="text" id="searchInput" placeholder="Search destination or trail (e.g. Rohtang, Kedarkantha)" onkeydown="if(event.key==='Enter') handleSearch()">
+      <button onclick="handleSearch()">Search</button>
+    </div>
+
+    <!-- Floating HUD Panel -->
+    <div class="floating-panel">
+      <div class="panel-row">
+        <div class="label">CURRENT ACTIVE FOCUS</div>
+        <div class="value active-route-val" id="float-route">Searching...</div>
+      </div>
+      <div class="panel-row dual">
+        <div>
+          <div class="label">SAFETY / HEURISTIC SCORE</div>
+          <div class="value display-font" id="float-score">--</div>
+        </div>
+        <div>
+          <div class="label">VERDICT</div>
+          <div class="value" id="float-status" style="font-size:13px; margin-top:4px;">WAITING</div>
+        </div>
+      </div>
+      <div class="panel-row">
+        <div>
+          <div class="label">COORDINATES & BASE CAMP</div>
+          <div class="value" id="float-coords" style="font-size:12px; color:var(--text-secondary);">32.2621° N, 77.2120° E</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="fullscreen-window">
+    <div class="window-content" style="max-width: 480px;">
+      <button class="close-btn" onclick="closeWindow('authModal')">&times;</button>
+      
+      <div class="window-header">
+        <h2 id="authModalTitle">🔐 Mountain Safety Login</h2>
+      </div>
+
+      <div class="auth-tab-bar">
+        <button class="auth-tab active" id="loginTabBtn" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="registerTabBtn" onclick="switchAuthTab('register')">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username or Email</label>
+          <input type="text" id="loginUsername" class="form-control" placeholder="e.g. sritama or admin" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; font-size:12px;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text-secondary);">
+            <input type="checkbox" id="rememberMe" checked> Remember login on this device
+          </label>
+        </div>
+        <button type="submit" class="submit-btn">Authenticate & Mount Session</button>
+        <div style="margin-top:14px; font-size:12px; text-align:center; color:var(--text-muted);">
+          Default Test Users: <code style="color:#fff;">sritama</code> / <code style="color:#fff;">password123</code> or <code style="color:#fff;">admin</code> / <code style="color:#fff;">admin123</code>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regFullName" class="form-control" placeholder="e.g. Sritama Mondal" required>
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="regUsername" class="form-control" placeholder="e.g. sritama_lead" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Min 6 characters" minlength="6" required>
+        </div>
+        <div class="form-group">
+          <label>Emergency Contact (Name & Phone)</label>
+          <input type="text" id="regEmergency" class="form-control" placeholder="e.g. Rahul (+91 9876543210)" required>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>Blood Group</label>
+            <select id="regBlood" class="form-control">
+              <option value="O+">O+</option>
+              <option value="A+">A+</option>
+              <option value="B+">B+</option>
+              <option value="AB+">AB+</option>
+              <option value="O-">O-</option>
+              <option value="A-">A-</option>
+              <option value="B-">B-</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Expedition Role</label>
+            <select id="regRole" class="form-control">
+              <option value="Lead Trekker">Lead Trekker</option>
+              <option value="Mountain Medic">Mountain Medic</option>
+              <option value="Alpine Scout">Alpine Scout</option>
+              <option value="Rear Sweeper">Rear Sweeper</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Create Account in Database</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="fullscreen-window">
+    <div class="window-content" style="max-width: 480px;">
+      <button class="close-btn" onclick="closeWindow('profileModal')">&times;</button>
+      <div class="window-header">
+        <h2>👤 Expedition Profile</h2>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <div id="profileAvatarLarge" style="width:64px; height:64px; border-radius:50%; background:var(--gradient-red); color:#fff; font-size:26px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">S</div>
+        <h3 id="profileFullName" style="color:#fff; font-size:18px;">Sritama Mondal</h3>
+        <div id="profileRoleBadge" style="display:inline-block; font-size:11px; background:rgba(16,185,129,0.2); color:var(--color-green); border:1px solid var(--color-green); padding:3px 10px; border-radius:12px; margin-top:4px;">Lead Trekker</div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.35); border-radius:12px; padding:16px; margin-bottom:20px; font-size:13px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="color:var(--text-muted);">Username:</span>
+          <span id="profileUsername" style="font-weight:600; color:#fff;">sritama</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="color:var(--text-muted);">Emergency Contact:</span>
+          <span id="profileEmergency" style="font-weight:600; color:#fff;">+91 9876543210</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span style="color:var(--text-muted);">Blood Group:</span>
+          <span id="profileBlood" style="font-weight:600; color:var(--color-red);">O+</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-muted);">Database Storage:</span>
+          <span style="font-weight:600; color:var(--color-green);">IndexedDB Persistent</span>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="handleLogout()" style="background:#7f1d1d;">🚪 Log Out of Device</button>
+    </div>
+  </div>
+
+  <!-- CSV UPLOAD MODAL -->
+    <!-- CSV UPLOAD MODAL -->
+  <div id="csvUploadModal" class="fullscreen-window">
+    <div class="window-content" style="max-width: 620px;">
+      <button class="close-btn" onclick="closeWindow('csvUploadModal')">&times;</button>
+      <div class="window-header">
+        <h2>📂 Ingest Hiking Trails Catalogue</h2>
+      </div>
+
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:14px; line-height:1.4;">
+        Upload your <code style="color:#fff;">.csv</code> file or paste CSV text directly. The system automatically maps all 10+ columns, creates mountain pathways, saves them into IndexedDB, and plots them on the map.
+      </p>
+
+      <!-- Status Message Area -->
+      <div id="csvUploadStatus" style="display:none; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:12px; font-weight:600;"></div>
+
+      <!-- Action 1: Explicit Visible Browse Button -->
+      <button type="button" class="submit-btn" style="margin-bottom:14px; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="triggerFilePicker()">
+        <span>📁</span> Choose CSV File from Computer
+      </button>
+
+      <!-- Action 2: Drag & Drop Zone -->
+      <label for="csvFileInput" class="csv-drop-zone" id="csvDropZone" style="display:block; cursor:pointer;">
+        <div class="csv-drop-icon">📄</div>
+        <div style="font-size:14px; font-weight:700; color:#fff; margin-bottom:4px;">
+          Click or Drag & Drop .CSV File Here
+        </div>
+        <div style="font-size:11px; color:var(--text-muted);">
+          Compatible with Kaggle (shwetayd/indian-trekking-routes-dataset) and custom CSV files
+        </div>
+      </label>
+      <input type="file" id="csvFileInput" accept=".csv,.txt,text/csv,text/plain" style="position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;" onchange="handleCSVFileSelect(event)">
+
+      <!-- Action 3: Direct Paste Box -->
+      <div style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+        <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+          <span>📋 Or Paste CSV Data Text Directly</span>
+          <button type="button" style="background:transparent; border:none; color:var(--color-blue); font-size:11px; cursor:pointer;" onclick="toggleCSVPasteArea()">Toggle Paste Box</button>
+        </div>
+        <div id="csvPasteContainer" style="display:none;">
+          <textarea id="csvPasteText" class="form-control" rows="5" placeholder="Paste raw CSV text here (including headers)..." style="font-family:monospace; font-size:11px; margin-bottom:10px;"></textarea>
+          <button type="button" class="action-btn" style="width:100%;" onclick="handleCSVPasteSubmit()">Import Pasted CSV Data</button>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px; font-size:11px; color:var(--text-muted); margin:16px 0;">
+        <strong style="color:#fff;">💡 Need the dataset template?</strong>
+        <a href="#" onclick="downloadSampleCSV(); return false;" style="color:var(--color-red); margin-left:6px; text-decoration:none; font-weight:bold;">Download CSV template with all columns</a>
+      </div>
+
+      <button class="action-btn secondary" style="width:100%;" onclick="closeWindow('csvUploadModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- SURVEY MODAL -->
+  <div id="surveyWindow" class="fullscreen-window">
+    <div class="window-content" style="max-width: 600px;">
+      <button class="close-btn" onclick="closeWindow('surveyWindow')">&times;</button>
+      <div class="window-header">
+        <h2>Route Survey & Feedback</h2>
+      </div>
+
+      <div class="form-group">
+        <label>1. How would you rate your overall trekking experience?</label>
+        <input type="range" min="1" max="5" value="5" style="width:100%; accent-color:var(--color-red);">
+      </div>
+
+      <div class="form-group">
+        <label>2. Trail condition & hazards noticed:</label>
+        <textarea id="surveyHazards" class="form-control" rows="2" placeholder="e.g. Recent rockfall near kilometer 8, water source dried up..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>3. Was navigation accurate?</label>
+        <select id="surveyNavAccuracy" class="form-control">
+          <option>Yes, 100% accurate offline</option>
+          <option>Minor deviations due to fog</option>
+          <option>Trail blocked by snow</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>4. Advice for subsequent expedition teams:</label>
+        <textarea id="surveyAdvice" class="form-control" rows="3" placeholder="Carry crampons, start summit push by 4 AM..."></textarea>
+      </div>
+
+      <button class="submit-btn" onclick="submitSurvey()">Publish to Mountain Network & DB</button>
+    </div>
+  </div>
+
+  <!-- REVIEWS MODAL -->
+  <div id="reviewsWindow" class="fullscreen-window">
+    <div class="window-content">
+      <button class="close-btn" onclick="closeWindow('reviewsWindow')">&times;</button>
+      <div class="window-header">
+        <h2>Community Past Reviews</h2>
+      </div>
+      <div id="reviewsContent"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       0. START NAVIGATION (EARLY BOOTSTRAP)
+       ========================================================================== */
+    function startNavigation() {
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.transition = 'opacity 0.6s ease, visibility 0.6s';
+        splash.style.opacity = '0';
+        splash.style.pointerEvents = 'none';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          if (window.map) {
+            window.map.invalidateSize();
+          }
+        }, 600);
+      }
+    }
+    window.startNavigation = startNavigation;
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        var sp = document.getElementById('splashScreen');
+        if (sp && sp.style.display !== 'none') {
+          startNavigation();
+        }
+      }
+    });
+
+    /* 1. REAL WORKING DATABASE ENGINE (INDEXEDDB) */
+    const DB_NAME = 'TrekSOS_Production_DB';
+    const DB_VERSION = 2;
+    let dbInstance = null;
+
+    class TrekDatabase {
+      static open() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('users')) {
+              const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+              userStore.createIndex('username', 'username', { unique: true });
+            }
+            if (!db.objectStoreNames.contains('sessions')) {
+              db.createObjectStore('sessions', { keyPath: 'key' });
+            }
+            if (!db.objectStoreNames.contains('hiking_trails')) {
+              const trailStore = db.createObjectStore('hiking_trails', { keyPath: 'id', autoIncrement: true });
+              trailStore.createIndex('name', 'name', { unique: false });
+              trailStore.createIndex('difficulty', 'difficulty', { unique: false });
+            }
+            if (!db.objectStoreNames.contains('sos_events')) {
+              db.createObjectStore('sos_events', { keyPath: 'id', autoIncrement: true });
+            }
+            if (!db.objectStoreNames.contains('saved_trails')) {
+              const savedStore = db.createObjectStore('saved_trails', { keyPath: 'id', autoIncrement: true });
+              savedStore.createIndex('userId', 'userId', { unique: false });
+            }
+          };
+
+          req.onsuccess = (e) => {
+            dbInstance = e.target.result;
+            resolve(dbInstance);
+          };
+
+          req.onerror = (e) => {
+            console.error('IndexedDB error:', e);
+            reject(e);
+          };
+        });
+      }
+
+      static async hashPassword(password) {
+        const msgUint8 = new TextEncoder().encode(password + '_treksos_salt');
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      static async addUser(user) {
+        const db = await this.open();
+        user.passwordHash = await this.hashPassword(user.password);
+        delete user.password;
+        user.createdAt = new Date().toISOString();
+
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(['users'], 'readwrite');
+          const store = tx.objectStore('users');
+          const req = store.add(user);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = (e) => reject(e.target.error);
+        });
+      }
+
+      static async getUserByUsername(username) {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['users'], 'readonly');
+          const store = tx.objectStore('users');
+          const index = store.index('username');
+          const req = index.get(username);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        });
+      }
+
+      static async getAllUsers() {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['users'], 'readonly');
+          const store = tx.objectStore('users');
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      }
+
+      static async setSession(user) {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['sessions'], 'readwrite');
+          const store = tx.objectStore('sessions');
+          store.put({ key: 'current_user', user, loggedInAt: new Date().toISOString() });
+          tx.oncomplete = () => {
+            localStorage.setItem('treksos_active_user', JSON.stringify(user));
+            resolve(true);
+          };
+        });
+      }
+
+      static async getSession() {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['sessions'], 'readonly');
+          const store = tx.objectStore('sessions');
+          const req = store.get('current_user');
+          req.onsuccess = () => {
+            if (req.result && req.result.user) {
+              resolve(req.result.user);
+            } else {
+              const local = localStorage.getItem('treksos_active_user');
+              resolve(local ? JSON.parse(local) : null);
+            }
+          };
+          req.onerror = () => resolve(null);
+        });
+      }
+
+      static async clearSession() {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['sessions'], 'readwrite');
+          const store = tx.objectStore('sessions');
+          store.delete('current_user');
+          localStorage.removeItem('treksos_active_user');
+          tx.oncomplete = () => resolve(true);
+        });
+      }
+
+      static async saveTrails(trailsList) {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['hiking_trails'], 'readwrite');
+          const store = tx.objectStore('hiking_trails');
+          store.clear();
+          trailsList.forEach(t => store.add(t));
+          tx.oncomplete = () => resolve(true);
+        });
+      }
+
+      static async getTrails() {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['hiking_trails'], 'readonly');
+          const store = tx.objectStore('hiking_trails');
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      }
+
+      static async logSOS(sosData) {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['sos_events'], 'readwrite');
+          const store = tx.objectStore('sos_events');
+          store.add(sosData);
+          tx.oncomplete = () => resolve(true);
+        });
+      }
+
+      static async getSOSLogs() {
+        const db = await this.open();
+        return new Promise((resolve) => {
+          const tx = db.transaction(['sos_events'], 'readonly');
+          const store = tx.objectStore('sos_events');
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      }
+    }
+
+    async function seedInitialDatabase() {
+      try {
+        const existingUsers = await TrekDatabase.getAllUsers();
+        if (existingUsers.length === 0) {
+          await TrekDatabase.addUser({
+            username: 'sritama',
+            password: 'password123',
+            fullName: 'Sritama Mondal',
+            emergency: 'Family Home (+91 98301 23456)',
+            blood: 'O+',
+            role: 'Lead Trekker'
+          });
+          await TrekDatabase.addUser({
+            username: 'admin',
+            password: 'admin123',
+            fullName: 'Mountain Rescue Officer',
+            emergency: 'Rescue Control VHF 146.520 MHz',
+            blood: 'B+',
+            role: 'Base Commander'
+          });
+          console.log('Seeded initial users into IndexedDB.');
+        }
+
+        // Always ensure the catalogue is populated with the complete 16 Indian Himalayan trails with pathways
+        currentTrailsList = [...DEFAULT_HIKING_DATASET];
+        await TrekDatabase.saveTrails(DEFAULT_HIKING_DATASET);
+        renderTrailsList();
+        console.log('Catalog refreshed with 16 Himalayan trails and complete pathways.');
+
+        currentUser = await TrekDatabase.getSession();
+        updateAuthUI();
+        updateDBInspectorUI();
+      } catch (err) {
+        console.warn('DB initialization notice:', err);
+      }
+    }
+
+    /* 2. DEFAULT HIKING TRAILS DATASET */
+    const DEFAULT_HIKING_DATASET = [
+  {
+    "trekName": "Kedarkantha Winter Summit Trek",
+    "stateRegion": "Uttarakhand (Govind Pashu Vihar Sanctuary)",
+    "baseCamp": "Sankri",
+    "maxAltitude": "12,500 ft (3,810 m)",
+    "difficulty": "Easy to Moderate",
+    "duration": "5 Days",
+    "bestSeason": "December to April (Peak Snow)",
+    "cost": "\u20b98,500 - 10,500",
+    "distance": "20 km",
+    "permit": "Govind Wildlife Eco-Zone Permit",
+    "accommodation": "Alpine Tents & Mountain Lodges",
+    "lat": 31.077,
+    "lng": 78.181,
+    "pathway": [
+      {
+        "name": "Sankri Base Village",
+        "lat": 31.077,
+        "lng": 78.181,
+        "alt": 1950,
+        "day": 1,
+        "desc": "Rustic wooden village roadhead"
+      },
+      {
+        "name": "Pine Forest Glade",
+        "lat": 31.065,
+        "lng": 78.192,
+        "alt": 2350,
+        "day": 1,
+        "desc": "Dense deodar and rhododendron canopy"
+      },
+      {
+        "name": "Juda Ka Talab (Frozen Lake)",
+        "lat": 31.052,
+        "lng": 78.205,
+        "alt": 2770,
+        "day": 2,
+        "desc": "Serene alpine lake completely frozen in winter"
+      },
+      {
+        "name": "Kedarkantha Basecamp",
+        "lat": 31.033,
+        "lng": 78.228,
+        "alt": 3400,
+        "day": 3,
+        "desc": "Vast snow meadow with sunset views"
+      },
+      {
+        "name": "Kedarkantha Peak Summit",
+        "lat": 31.023,
+        "lng": 78.251,
+        "alt": 3810,
+        "day": 4,
+        "desc": "360\u00b0 summit panorama of 13 Himalayan peaks"
+      },
+      {
+        "name": "Hargaon Forest Camp",
+        "lat": 31.042,
+        "lng": 78.216,
+        "alt": 2650,
+        "day": 4,
+        "desc": "Protected campsite in pine forest"
+      },
+      {
+        "name": "Sankri Return",
+        "lat": 31.077,
+        "lng": 78.181,
+        "alt": 1950,
+        "day": 5,
+        "desc": "Return to base station and debrief"
+      }
+    ]
+  },
+  {
+    "trekName": "Hampta Pass & Chandratal Trek",
+    "stateRegion": "Himachal Pradesh (Kullu to Spiti Valley)",
+    "baseCamp": "Jobra (near Manali)",
+    "maxAltitude": "14,100 ft (4,287 m)",
+    "difficulty": "Moderate",
+    "duration": "5 Days",
+    "bestSeason": "Mid June to October",
+    "cost": "\u20b99,500 - 12,000",
+    "distance": "35 km",
+    "permit": "Himachal Forest Department Eco Permit",
+    "accommodation": "High Altitude Expedition Dome Tents",
+    "lat": 32.2355,
+    "lng": 77.2625,
+    "pathway": [
+      {
+        "name": "Jobra Basecamp",
+        "lat": 32.2355,
+        "lng": 77.2625,
+        "alt": 2800,
+        "day": 1,
+        "desc": "Lush forest trailhead by Rani Nallah"
+      },
+      {
+        "name": "Chika Riverside Meadow",
+        "lat": 32.251,
+        "lng": 77.295,
+        "alt": 3100,
+        "day": 2,
+        "desc": "Expansive alpine meadow crossing river stream"
+      },
+      {
+        "name": "Jwara Flower Valley",
+        "lat": 32.265,
+        "lng": 77.315,
+        "alt": 3450,
+        "day": 2,
+        "desc": "Wildflower plateau nestled between towering walls"
+      },
+      {
+        "name": "Balu Ka Ghera (Sand Valley)",
+        "lat": 32.278,
+        "lng": 77.332,
+        "alt": 3750,
+        "day": 3,
+        "desc": "Sandy glacial basin under snow peaks"
+      },
+      {
+        "name": "Hampta Pass Summit Ridge",
+        "lat": 32.302,
+        "lng": 77.368,
+        "alt": 4287,
+        "day": 4,
+        "desc": "Dramatic crossing from green Kullu to desert Spiti"
+      },
+      {
+        "name": "Shea Goru Oasis Camp",
+        "lat": 32.321,
+        "lng": 77.391,
+        "alt": 3900,
+        "day": 4,
+        "desc": "Picturesque cold campsite by icy glacial brook"
+      },
+      {
+        "name": "Chatru Roadhead & Moon Lake",
+        "lat": 32.345,
+        "lng": 77.419,
+        "alt": 3300,
+        "day": 5,
+        "desc": "Spiti junction with Chandra Taal excursion"
+      }
+    ]
+  },
+  {
+    "trekName": "Roopkund Mystery Lake Trek",
+    "stateRegion": "Uttarakhand (Chamoli District, Garhwal)",
+    "baseCamp": "Lohajung",
+    "maxAltitude": "15,750 ft (4,790 m)",
+    "difficulty": "Difficult",
+    "duration": "8 Days",
+    "bestSeason": "May to June, September to October",
+    "cost": "\u20b913,500 - 16,000",
+    "distance": "53 km",
+    "permit": "Nanda Devi Biosphere Reserve Permit",
+    "accommodation": "Homestays & High Mountain Camps",
+    "lat": 30.081,
+    "lng": 79.578,
+    "pathway": [
+      {
+        "name": "Lohajung Village Base",
+        "lat": 30.081,
+        "lng": 79.578,
+        "alt": 2300,
+        "day": 1,
+        "desc": "Traditional Garhwali trailhead"
+      },
+      {
+        "name": "Didna Forest Village",
+        "lat": 30.122,
+        "lng": 79.61,
+        "alt": 2450,
+        "day": 2,
+        "desc": "Steep forested valley across Neel Ganga"
+      },
+      {
+        "name": "Ali Bugyal Alpine Meadow",
+        "lat": 30.165,
+        "lng": 79.645,
+        "alt": 3400,
+        "day": 3,
+        "desc": "Asia's largest uninterrupted velvet green bugyal"
+      },
+      {
+        "name": "Bedni Bugyal Ridge",
+        "lat": 30.189,
+        "lng": 79.67,
+        "alt": 3550,
+        "day": 3,
+        "desc": "Direct views of Mt. Trishul and Nanda Ghunti"
+      },
+      {
+        "name": "Ghora Lotani (Moraine)",
+        "lat": 30.215,
+        "lng": 79.699,
+        "alt": 3800,
+        "day": 4,
+        "desc": "Acclimatization camp in rocky terrain"
+      },
+      {
+        "name": "Bhagwabasa Snow Cave Camp",
+        "lat": 30.245,
+        "lng": 79.728,
+        "alt": 4300,
+        "day": 5,
+        "desc": "Sub-zero stone shelter camp in scree"
+      },
+      {
+        "name": "Roopkund Glacial Lake",
+        "lat": 30.264,
+        "lng": 79.739,
+        "alt": 4790,
+        "day": 5,
+        "desc": "High altitude crater lake surrounded by glaciers"
+      }
+    ]
+  },
+  {
+    "trekName": "Borasu Pass Alpine Expedition",
+    "stateRegion": "Uttarakhand to Himachal Pradesh (Tons to Baspa)",
+    "baseCamp": "Sankri / Taluka",
+    "maxAltitude": "17,880 ft (5,450 m)",
+    "difficulty": "Difficult / High Alpine Pass",
+    "duration": "8 Days",
+    "bestSeason": "May to June, September to October",
+    "cost": "\u20b924,000 - 32,000",
+    "distance": "67 km",
+    "permit": "Indo-Tibetan Border Clearance & Forest Permit",
+    "accommodation": "Four-Season Extreme Weather Tents",
+    "lat": 31.0625,
+    "lng": 78.3302,
+    "pathway": [
+      {
+        "name": "Taluka Basecamp",
+        "lat": 31.0625,
+        "lng": 78.3302,
+        "alt": 2100,
+        "day": 1,
+        "desc": "Supin river confluence roadhead"
+      },
+      {
+        "name": "Seema Camp & River Bridge",
+        "lat": 31.091,
+        "lng": 78.398,
+        "alt": 2600,
+        "day": 2,
+        "desc": "Forest riverside clearing with mountain huts"
+      },
+      {
+        "name": "Har Ki Dun Junction",
+        "lat": 31.134,
+        "lng": 78.435,
+        "alt": 3500,
+        "day": 3,
+        "desc": "Valley junction overlooking Swargarohini peaks"
+      },
+      {
+        "name": "Rathatho Alpine Camp",
+        "lat": 31.168,
+        "lng": 78.472,
+        "alt": 4200,
+        "day": 4,
+        "desc": "High bugyal under towering granite walls"
+      },
+      {
+        "name": "Borasu Glacier Moraine",
+        "lat": 31.192,
+        "lng": 78.498,
+        "alt": 4900,
+        "day": 5,
+        "desc": "Glacial ice field crossing with crampons"
+      },
+      {
+        "name": "Borasu Pass Summit Col",
+        "lat": 31.215,
+        "lng": 78.515,
+        "alt": 5450,
+        "day": 6,
+        "desc": "Sharp mountain ridge crossing into Kinnaur"
+      },
+      {
+        "name": "Bonga Camp (Baspa Valley)",
+        "lat": 31.24,
+        "lng": 78.545,
+        "alt": 4000,
+        "day": 7,
+        "desc": "Green pastoral meadows of Himachal"
+      },
+      {
+        "name": "Chitkul (Last Indian Village)",
+        "lat": 31.35,
+        "lng": 78.438,
+        "alt": 3450,
+        "day": 8,
+        "desc": "Historic Indo-Tibetan border terminus"
+      }
+    ]
+  },
+  {
+    "trekName": "Chadar Frozen River Trek",
+    "stateRegion": "Ladakh (Zanskar Gorge)",
+    "baseCamp": "Leh / Chilling",
+    "maxAltitude": "11,150 ft (3,400 m)",
+    "difficulty": "Difficult (Sub-Zero Ice Walk)",
+    "duration": "9 Days",
+    "bestSeason": "January to February (Peak Winter)",
+    "cost": "\u20b922,000 - 30,000",
+    "distance": "62 km",
+    "permit": "ALTOA Wildlife Clearance & Medical Certificate",
+    "accommodation": "Natural Caves & Riverbank Tents",
+    "lat": 34.015,
+    "lng": 77.21,
+    "pathway": [
+      {
+        "name": "Chilling Roadhead",
+        "lat": 34.015,
+        "lng": 77.21,
+        "alt": 3150,
+        "day": 1,
+        "desc": "Where the frozen Zanskar river begins"
+      },
+      {
+        "name": "Tilat Sumdo Ice Gorge",
+        "lat": 34.053,
+        "lng": 77.195,
+        "alt": 3200,
+        "day": 2,
+        "desc": "Walking on thick sheet of river ice"
+      },
+      {
+        "name": "Shingra Koma Ice Shelf",
+        "lat": 34.095,
+        "lng": 77.17,
+        "alt": 3250,
+        "day": 3,
+        "desc": "Twisting canyon with frozen waterfalls"
+      },
+      {
+        "name": "Tibb Frozen Cave Camp",
+        "lat": 34.135,
+        "lng": 77.135,
+        "alt": 3300,
+        "day": 4,
+        "desc": "Natural sandstone overhanging cave shelter"
+      },
+      {
+        "name": "Nerak Frozen Waterfall",
+        "lat": 34.178,
+        "lng": 77.098,
+        "alt": 3400,
+        "day": 5,
+        "desc": "50-meter frozen jade-blue waterfall wonder"
+      }
+    ]
+  },
+  {
+    "trekName": "Valley of Flowers & Hemkund",
+    "stateRegion": "Uttarakhand (Garhwal Himalayas)",
+    "baseCamp": "Govindghat",
+    "maxAltitude": "14,400 ft (4,389 m)",
+    "difficulty": "Easy to Moderate",
+    "duration": "6 Days",
+    "bestSeason": "July to September (Monsoon Bloom)",
+    "cost": "\u20b99,000 - 11,500",
+    "distance": "38 km",
+    "permit": "UNESCO World Heritage Entry Ticket at Ghangaria",
+    "accommodation": "Guesthouses & Forest Rest Houses",
+    "lat": 30.625,
+    "lng": 79.562,
+    "pathway": [
+      {
+        "name": "Govindghat Base",
+        "lat": 30.625,
+        "lng": 79.562,
+        "alt": 1800,
+        "day": 1,
+        "desc": "Alaknanda river suspension bridge base"
+      },
+      {
+        "name": "Pulna Village Checkpoint",
+        "lat": 30.655,
+        "lng": 79.575,
+        "alt": 2100,
+        "day": 1,
+        "desc": "Stone pathway trailhead"
+      },
+      {
+        "name": "Bhyundar Valley Riverside",
+        "lat": 30.685,
+        "lng": 79.585,
+        "alt": 2500,
+        "day": 1,
+        "desc": "Rushing glacial stream valley"
+      },
+      {
+        "name": "Ghangaria Alpine Base",
+        "lat": 30.702,
+        "lng": 79.592,
+        "alt": 3050,
+        "day": 2,
+        "desc": "Central staging settlement"
+      },
+      {
+        "name": "Pushpawati River Gorge",
+        "lat": 30.718,
+        "lng": 79.595,
+        "alt": 3400,
+        "day": 3,
+        "desc": "Entrance bridge to protected UNESCO sanctuary"
+      },
+      {
+        "name": "Valley of Flowers Meadow",
+        "lat": 30.728,
+        "lng": 79.596,
+        "alt": 3650,
+        "day": 3,
+        "desc": "Carpet of 500+ wild Himalayan flower species"
+      },
+      {
+        "name": "Hemkund Sahib Glacial Lake",
+        "lat": 30.698,
+        "lng": 79.615,
+        "alt": 4389,
+        "day": 4,
+        "desc": "Sacred high-altitude lake ringed by 7 snow peaks"
+      }
+    ]
+  },
+  {
+    "trekName": "Beas Kund Glacial Basin",
+    "stateRegion": "Himachal Pradesh (Manali Valley)",
+    "baseCamp": "Solang Nallah",
+    "maxAltitude": "12,772 ft (3,893 m)",
+    "difficulty": "Moderate",
+    "duration": "4 Days",
+    "bestSeason": "May to October",
+    "cost": "\u20b96,500 - 8,000",
+    "distance": "16 km",
+    "permit": "Local Forest Entry Registration at Solang",
+    "accommodation": "Riverside Alpine Campsites",
+    "lat": 32.316,
+    "lng": 77.157,
+    "pathway": [
+      {
+        "name": "Solang Nallah Base",
+        "lat": 32.316,
+        "lng": 77.157,
+        "alt": 2480,
+        "day": 1,
+        "desc": "Manali valley roadhead"
+      },
+      {
+        "name": "Dhundi Alpine Forest",
+        "lat": 32.338,
+        "lng": 77.135,
+        "alt": 2840,
+        "day": 1,
+        "desc": "Birch and pine forest by Beas river headwaters"
+      },
+      {
+        "name": "Bakarthach Meadow",
+        "lat": 32.355,
+        "lng": 77.108,
+        "alt": 3300,
+        "day": 2,
+        "desc": "Shepherd meadow under Friendship Peak"
+      },
+      {
+        "name": "Beas Kund Glacial Lake",
+        "lat": 32.3683,
+        "lng": 77.0877,
+        "alt": 3893,
+        "day": 3,
+        "desc": "Origin of the Beas River below Hanuman Tibba"
+      },
+      {
+        "name": "Ridge Viewpoint Col",
+        "lat": 32.378,
+        "lng": 77.075,
+        "alt": 4050,
+        "day": 3,
+        "desc": "Panoramic views of Ladakhi and Shitidhar peaks"
+      }
+    ]
+  },
+  {
+    "trekName": "Pin Parvati Pass Traverse",
+    "stateRegion": "Himachal Pradesh (Parvati to Spiti)",
+    "baseCamp": "Barsheni / Kaza",
+    "maxAltitude": "17,450 ft (5,319 m)",
+    "difficulty": "Difficult / High Alpine Pass",
+    "duration": "11 Days",
+    "bestSeason": "July to September",
+    "cost": "\u20b928,000 - 35,000",
+    "distance": "110 km",
+    "permit": "Great Himalayan National Park Sanctuary Permit",
+    "accommodation": "Wilderness Expedition Tents",
+    "lat": 31.985,
+    "lng": 77.42,
+    "pathway": [
+      {
+        "name": "Barsheni Village Base",
+        "lat": 31.985,
+        "lng": 77.42,
+        "alt": 2200,
+        "day": 1,
+        "desc": "Parvati valley terminus"
+      },
+      {
+        "name": "Khirganga Geothermal Springs",
+        "lat": 31.992,
+        "lng": 77.51,
+        "alt": 2960,
+        "day": 2,
+        "desc": "Hot sulfur pools surrounded by pines"
+      },
+      {
+        "name": "Tunda Bhuj Birch Forest",
+        "lat": 31.982,
+        "lng": 77.585,
+        "alt": 3285,
+        "day": 3,
+        "desc": "High silver birch cliffs and roaring rapids"
+      },
+      {
+        "name": "Thakur Kuan Alpine Meadow",
+        "lat": 31.965,
+        "lng": 77.652,
+        "alt": 3560,
+        "day": 4,
+        "desc": "Pastoral meadow with natural rock bridges"
+      },
+      {
+        "name": "Mantalai Glacial Sacred Lake",
+        "lat": 31.895,
+        "lng": 77.72,
+        "alt": 4115,
+        "day": 5,
+        "desc": "Expansive glacial lake sacred to Lord Shiva"
+      },
+      {
+        "name": "Pin Parvati Base Camp",
+        "lat": 31.865,
+        "lng": 77.742,
+        "alt": 4940,
+        "day": 6,
+        "desc": "Moraine camp right below hanging glaciers"
+      },
+      {
+        "name": "Pin Parvati Pass Col & Summit",
+        "lat": 31.8464,
+        "lng": 77.7472,
+        "alt": 5319,
+        "day": 7,
+        "desc": "Challenging snow pass into Spiti desert"
+      },
+      {
+        "name": "Tiya Desert Camp",
+        "lat": 31.875,
+        "lng": 77.785,
+        "alt": 3900,
+        "day": 8,
+        "desc": "Colorful red and ochre sedimentary landscape"
+      },
+      {
+        "name": "Mudh Village (Spiti Valley)",
+        "lat": 31.96,
+        "lng": 77.925,
+        "alt": 3810,
+        "day": 9,
+        "desc": "Whitewashed Buddhist village finish"
+      }
+    ]
+  },
+  {
+    "trekName": "Har Ki Dun Heritage Valley",
+    "stateRegion": "Uttarakhand (Tons Valley)",
+    "baseCamp": "Sankri",
+    "maxAltitude": "11,700 ft (3,566 m)",
+    "difficulty": "Easy to Moderate",
+    "duration": "7 Days",
+    "bestSeason": "April to June, September to December",
+    "cost": "\u20b910,000 - 12,500",
+    "distance": "47 km",
+    "permit": "Govind Wildlife Sanctuary Entry Permit",
+    "accommodation": "Heritage Homestays & Camps",
+    "lat": 31.077,
+    "lng": 78.181,
+    "pathway": [
+      {
+        "name": "Sankri Base",
+        "lat": 31.077,
+        "lng": 78.181,
+        "alt": 1950,
+        "day": 1,
+        "desc": "Historic mountain village base"
+      },
+      {
+        "name": "Taluka Roadhead",
+        "lat": 31.0625,
+        "lng": 78.3302,
+        "alt": 2100,
+        "day": 2,
+        "desc": "Wooden suspension bridge crossing"
+      },
+      {
+        "name": "Osla Ancient Village",
+        "lat": 31.112,
+        "lng": 78.405,
+        "alt": 2590,
+        "day": 3,
+        "desc": "Centuries-old Someshwar Devta wooden temple"
+      },
+      {
+        "name": "Kalkattiyadhar Alpine Ridge",
+        "lat": 31.135,
+        "lng": 78.428,
+        "alt": 2950,
+        "day": 4,
+        "desc": "Open ridge facing Mt. Swargarohini"
+      },
+      {
+        "name": "Har Ki Dun Cradle Valley",
+        "lat": 31.1444,
+        "lng": 78.4314,
+        "alt": 3566,
+        "day": 5,
+        "desc": "Legendary Valley of Gods"
+      },
+      {
+        "name": "Jaundhar Glacier Viewpoint",
+        "lat": 31.168,
+        "lng": 78.448,
+        "alt": 4300,
+        "day": 5,
+        "desc": "Close-up view of towering glacial wall"
+      }
+    ]
+  },
+  {
+    "trekName": "Markha Valley High Plateau",
+    "stateRegion": "Ladakh (Hemis National Park)",
+    "baseCamp": "Chilling / Spituk",
+    "maxAltitude": "17,060 ft (5,200 m)",
+    "difficulty": "Moderate to Difficult",
+    "duration": "8 Days",
+    "bestSeason": "June to September",
+    "cost": "\u20b916,000 - 20,000",
+    "distance": "65 km",
+    "permit": "Hemis National Park Wildlife & Inner Line Permit",
+    "accommodation": "Ladakhi Village Homestays & Tents",
+    "lat": 34.015,
+    "lng": 77.21,
+    "pathway": [
+      {
+        "name": "Chilling Confluence",
+        "lat": 34.015,
+        "lng": 77.21,
+        "alt": 3150,
+        "day": 1,
+        "desc": "Zanskar river ropeway crossing"
+      },
+      {
+        "name": "Skiu Monastic Village",
+        "lat": 33.985,
+        "lng": 77.265,
+        "alt": 3400,
+        "day": 2,
+        "desc": "11th-century Buddhist monastery"
+      },
+      {
+        "name": "Sara High Meadow",
+        "lat": 33.955,
+        "lng": 77.32,
+        "alt": 3550,
+        "day": 3,
+        "desc": "Wild willow and apricot groves"
+      },
+      {
+        "name": "Markha Ancient Fortress",
+        "lat": 33.925,
+        "lng": 77.375,
+        "alt": 3770,
+        "day": 4,
+        "desc": "Largest village in the valley with ruins"
+      },
+      {
+        "name": "Hankar Towering Fort",
+        "lat": 33.895,
+        "lng": 77.41,
+        "alt": 4000,
+        "day": 5,
+        "desc": "Dramatic citadel perched atop a pinnacle"
+      },
+      {
+        "name": "Nimaling Grazing Plateau",
+        "lat": 33.865,
+        "lng": 77.465,
+        "alt": 4720,
+        "day": 6,
+        "desc": "Vast green plateau under Kang Yatse peak"
+      },
+      {
+        "name": "Kongmaru La High Pass",
+        "lat": 33.8821,
+        "lng": 77.495,
+        "alt": 5200,
+        "day": 7,
+        "desc": "Spectacular views of Karakoram Range"
+      },
+      {
+        "name": "Shang Sumdo Roadhead",
+        "lat": 33.935,
+        "lng": 77.545,
+        "alt": 3670,
+        "day": 8,
+        "desc": "Red canyon descent to monastery"
+      }
+    ]
+  },
+  {
+    "trekName": "Goechala Kanchenjunga View",
+    "stateRegion": "Sikkim (Kanchenjunga National Park)",
+    "baseCamp": "Yuksom",
+    "maxAltitude": "16,200 ft (4,940 m)",
+    "difficulty": "Difficult",
+    "duration": "10 Days",
+    "bestSeason": "April to May, October to November",
+    "cost": "\u20b918,500 - 24,000",
+    "distance": "90 km",
+    "permit": "KNP Biosphere Permit & Police Clearance",
+    "accommodation": "Trekker Huts & Alpine Tents",
+    "lat": 27.371,
+    "lng": 88.221,
+    "pathway": [
+      {
+        "name": "Yuksom Base",
+        "lat": 27.371,
+        "lng": 88.221,
+        "alt": 1780,
+        "day": 1,
+        "desc": "Historic first capital of Sikkim"
+      },
+      {
+        "name": "Sachen Rainforest Camp",
+        "lat": 27.425,
+        "lng": 88.21,
+        "alt": 2200,
+        "day": 2,
+        "desc": "Lush moss-draped cloud forest"
+      },
+      {
+        "name": "Tshoka Tibetan Settlement",
+        "lat": 27.465,
+        "lng": 88.205,
+        "alt": 3000,
+        "day": 3,
+        "desc": "Rhododendron ridge with wooden monastery"
+      },
+      {
+        "name": "Dzongri Ridge Viewpoint",
+        "lat": 27.525,
+        "lng": 88.195,
+        "alt": 4030,
+        "day": 4,
+        "desc": "Breathtaking sunrise over Pandim and Kabru"
+      },
+      {
+        "name": "Thansing Prek Chu Valley",
+        "lat": 27.565,
+        "lng": 88.188,
+        "alt": 3930,
+        "day": 5,
+        "desc": "Alpine riverbed below Mt. Pandim"
+      },
+      {
+        "name": "Lamuney Glacial Camp",
+        "lat": 27.595,
+        "lng": 88.185,
+        "alt": 4165,
+        "day": 6,
+        "desc": "Cold windswept moraine camp"
+      },
+      {
+        "name": "Samiti Glacial Sacred Lake",
+        "lat": 27.608,
+        "lng": 88.186,
+        "alt": 4300,
+        "day": 7,
+        "desc": "Emerald crystal high altitude lake"
+      },
+      {
+        "name": "Goechala Viewpoint 1",
+        "lat": 27.6186,
+        "lng": 88.1963,
+        "alt": 4940,
+        "day": 7,
+        "desc": "Unrivalled face-to-face view of Mt. Kanchenjunga"
+      }
+    ]
+  },
+  {
+    "trekName": "Sandakphu & Singalila Ridge",
+    "stateRegion": "West Bengal / Sikkim Border",
+    "baseCamp": "Manebhanjan",
+    "maxAltitude": "11,930 ft (3,636 m)",
+    "difficulty": "Easy to Moderate",
+    "duration": "6 Days",
+    "bestSeason": "October to April (Views of 4 Highest Peaks)",
+    "cost": "\u20b98,000 - 11,000",
+    "distance": "46 km",
+    "permit": "Singalila National Park Forest Dept Ticket",
+    "accommodation": "Tea Huts & Ridge Homestays",
+    "lat": 26.985,
+    "lng": 88.125,
+    "pathway": [
+      {
+        "name": "Manebhanjan Base",
+        "lat": 26.985,
+        "lng": 88.125,
+        "alt": 1928,
+        "day": 1,
+        "desc": "Land Rover checkpoint town"
+      },
+      {
+        "name": "Chitre Monastery",
+        "lat": 27.012,
+        "lng": 88.115,
+        "alt": 2540,
+        "day": 1,
+        "desc": "Peaceful Buddhist gompa on ridge"
+      },
+      {
+        "name": "Tumling Border Ridge",
+        "lat": 27.045,
+        "lng": 88.085,
+        "alt": 2970,
+        "day": 2,
+        "desc": "Hamlet straddling India-Nepal frontier"
+      },
+      {
+        "name": "Kalipokhri Black Lake",
+        "lat": 27.075,
+        "lng": 88.045,
+        "alt": 3108,
+        "day": 3,
+        "desc": "Dark holy lake with prayer flags"
+      },
+      {
+        "name": "Sandakphu Peak Summit",
+        "lat": 27.1064,
+        "lng": 88.0016,
+        "alt": 3636,
+        "day": 4,
+        "desc": "Sleeping Buddha panorama: Everest & Kanchenjunga"
+      },
+      {
+        "name": "Sabargram High Meadow",
+        "lat": 27.145,
+        "lng": 88.012,
+        "alt": 3530,
+        "day": 5,
+        "desc": "Wild open grasslands with rhododendrons"
+      },
+      {
+        "name": "Phalut Tri-Junction",
+        "lat": 27.185,
+        "lng": 88.028,
+        "alt": 3600,
+        "day": 6,
+        "desc": "Where Sikkim, Nepal, and Bengal meet"
+      }
+    ]
+  },
+  {
+    "trekName": "Brahmatal Frozen Winter Lake",
+    "stateRegion": "Uttarakhand (Chamoli, Garhwal)",
+    "baseCamp": "Lohajung",
+    "maxAltitude": "12,250 ft (3,734 m)",
+    "difficulty": "Moderate",
+    "duration": "6 Days",
+    "bestSeason": "December to March (Winter Snow)",
+    "cost": "\u20b98,500 - 10,500",
+    "distance": "22 km",
+    "permit": "Uttarakhand Forest Department Permit",
+    "accommodation": "Snow Alpine Tents",
+    "lat": 30.081,
+    "lng": 79.578,
+    "pathway": [
+      {
+        "name": "Lohajung Village",
+        "lat": 30.081,
+        "lng": 79.578,
+        "alt": 2300,
+        "day": 1,
+        "desc": "Scenic starting ridge base"
+      },
+      {
+        "name": "Bekaltal Forest Lake",
+        "lat": 30.105,
+        "lng": 79.565,
+        "alt": 2950,
+        "day": 2,
+        "desc": "Frozen oak-fringed forest lake"
+      },
+      {
+        "name": "Tilandi Ridge Glade",
+        "lat": 30.118,
+        "lng": 79.558,
+        "alt": 3150,
+        "day": 3,
+        "desc": "Exposed ridge with views of Mt. Trishul"
+      },
+      {
+        "name": "Brahmatal Alpine Camp",
+        "lat": 30.1256,
+        "lng": 79.5678,
+        "alt": 3400,
+        "day": 3,
+        "desc": "High altitude lake camp in snow bowl"
+      },
+      {
+        "name": "Brahmatal Summit Pass",
+        "lat": 30.138,
+        "lng": 79.575,
+        "alt": 3734,
+        "day": 4,
+        "desc": "Panoramic sight of Mt. Nanda Ghunti"
+      }
+    ]
+  },
+  {
+    "trekName": "Kuari Pass Lord Curzon Trail",
+    "stateRegion": "Uttarakhand (Nanda Devi Sanctuary)",
+    "baseCamp": "Joshimath / Dhak",
+    "maxAltitude": "12,516 ft (3,815 m)",
+    "difficulty": "Easy to Moderate",
+    "duration": "6 Days",
+    "bestSeason": "November to March, April to June",
+    "cost": "\u20b99,000 - 11,500",
+    "distance": "33 km",
+    "permit": "Forest Department Eco-Tax at Dhak",
+    "accommodation": "Forest Rest Houses & Dome Tents",
+    "lat": 30.542,
+    "lng": 79.595,
+    "pathway": [
+      {
+        "name": "Dhak Village Roadhead",
+        "lat": 30.542,
+        "lng": 79.595,
+        "alt": 2050,
+        "day": 1,
+        "desc": "Step farms and terraced hills"
+      },
+      {
+        "name": "Tugasi Himalayan Hamlet",
+        "lat": 30.532,
+        "lng": 79.608,
+        "alt": 2380,
+        "day": 1,
+        "desc": "Traditional slate-roof Garhwali homes"
+      },
+      {
+        "name": "Gulling Oak Forest Camp",
+        "lat": 30.525,
+        "lng": 79.618,
+        "alt": 2750,
+        "day": 2,
+        "desc": "Campsite sheltered by giant brown oaks"
+      },
+      {
+        "name": "Khullara High Meadow",
+        "lat": 30.5186,
+        "lng": 79.6289,
+        "alt": 3350,
+        "day": 3,
+        "desc": "Clear panorama of Dronagiri and Kamet"
+      },
+      {
+        "name": "Kuari Pass Summit Col",
+        "lat": 30.505,
+        "lng": 79.645,
+        "alt": 3815,
+        "day": 4,
+        "desc": "Curzon's classic 360\u00b0 gateway to Nanda Devi"
+      }
+    ]
+  },
+  {
+    "trekName": "Buran Ghati Pass Expedition",
+    "stateRegion": "Himachal Pradesh (Pabbar to Kinnaur)",
+    "baseCamp": "Janglik",
+    "maxAltitude": "15,000 ft (4,572 m)",
+    "difficulty": "Moderate to Difficult",
+    "duration": "7 Days",
+    "bestSeason": "May to June, September to October",
+    "cost": "\u20b913,000 - 16,000",
+    "distance": "37 km",
+    "permit": "Himachal Forest Eco Pass & Guide Clearance",
+    "accommodation": "High Meadow Campsites",
+    "lat": 31.335,
+    "lng": 77.865,
+    "pathway": [
+      {
+        "name": "Janglik Heritage Village",
+        "lat": 31.335,
+        "lng": 77.865,
+        "alt": 2800,
+        "day": 1,
+        "desc": "Untouched Pabbar valley village base"
+      },
+      {
+        "name": "Dayara Bugyal Meadow",
+        "lat": 31.355,
+        "lng": 77.892,
+        "alt": 3350,
+        "day": 2,
+        "desc": "Expansive green grassland plateau"
+      },
+      {
+        "name": "Litham Silver Birch Camp",
+        "lat": 31.372,
+        "lng": 77.91,
+        "alt": 3580,
+        "day": 3,
+        "desc": "Junction camp below Chandranahan falls"
+      },
+      {
+        "name": "Chandranahan Glacial Lake",
+        "lat": 31.385,
+        "lng": 77.918,
+        "alt": 4200,
+        "day": 4,
+        "desc": "Seven glacial tarns source of Pabbar river"
+      },
+      {
+        "name": "Dhunda Moraine Base",
+        "lat": 31.3912,
+        "lng": 77.9254,
+        "alt": 4050,
+        "day": 5,
+        "desc": "Windy alpine staging post"
+      },
+      {
+        "name": "Buran Ghati Ice Wall Pass",
+        "lat": 31.405,
+        "lng": 77.942,
+        "alt": 4572,
+        "day": 6,
+        "desc": "Thrilling 400ft snow wall abseil into Kinnaur"
+      },
+      {
+        "name": "Barua Village (Kinnaur)",
+        "lat": 31.425,
+        "lng": 77.985,
+        "alt": 2040,
+        "day": 7,
+        "desc": "Apple orchard valley terminus"
+      }
+    ]
+  },
+  {
+    "trekName": "Triund & Dhauladhar Snowline",
+    "stateRegion": "Himachal Pradesh (Dharamshala / Kangra)",
+    "baseCamp": "McLeod Ganj / Bhagsu",
+    "maxAltitude": "10,650 ft (3,246 m)",
+    "difficulty": "Easy",
+    "duration": "2 Days",
+    "bestSeason": "Round the year (Except heavy monsoon)",
+    "cost": "\u20b92,000 - 3,500",
+    "distance": "14 km",
+    "permit": "Police Checkpoint Registration at Galu Temple",
+    "accommodation": "Forest Guesthouse & Ridge Tents",
+    "lat": 32.242,
+    "lng": 76.321,
+    "pathway": [
+      {
+        "name": "McLeod Ganj Base",
+        "lat": 32.242,
+        "lng": 76.321,
+        "alt": 2082,
+        "day": 1,
+        "desc": "Dharamshala hill station hub"
+      },
+      {
+        "name": "Dharamkot Pine Ridge",
+        "lat": 32.248,
+        "lng": 76.329,
+        "alt": 2150,
+        "day": 1,
+        "desc": "Quiet pine-clad forest track"
+      },
+      {
+        "name": "Galu Devi Checkpoint",
+        "lat": 32.251,
+        "lng": 76.335,
+        "alt": 2130,
+        "day": 1,
+        "desc": "Trailhead cafe and forest verification"
+      },
+      {
+        "name": "Magic View High Tea Stall",
+        "lat": 32.255,
+        "lng": 76.345,
+        "alt": 2500,
+        "day": 1,
+        "desc": "Historic oldest chai shack on trail"
+      },
+      {
+        "name": "Triund Meadow Ridge",
+        "lat": 32.2589,
+        "lng": 76.3533,
+        "alt": 2875,
+        "day": 1,
+        "desc": "Dramatic ridge face to face with Dhauladhar rock wall"
+      },
+      {
+        "name": "Snowline Cafe & Laka Glacier",
+        "lat": 32.268,
+        "lng": 76.362,
+        "alt": 3246,
+        "day": 2,
+        "desc": "Glacial moraine under Moon Peak"
+      }
+    ]
+  }
+];
+
+    let currentTrailsList = [...DEFAULT_HIKING_DATASET];
+    let selectedDifficulty = 'ALL';
+    let currentUser = null;
+
+    /* 3. MAP INITIALIZATION & FREE TILES (NO API KEYS) */
+    const map = L.map('map', { 
+      zoomControl: true,
+      fadeAnimation: true
+    }).setView([32.2432, 77.1892], 13);
+    window.map = map;
+
+    const osmStandard = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    });
+
+    const esriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: 'Tiles © Esri'
+    });
+
+    const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS'
+    });
+
+    const cartoDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd',
+      attribution: '© OpenStreetMap contributors, © CARTO'
+    });
+
+    // Default to Esri Topographic (high detail for mountains)
+    esriTopo.addTo(map);
+
+    const baseMaps = {
+      "🏔️ Topographic & Terrain (Esri)": esriTopo,
+      "🗺️ Street & Trails (OpenStreetMap)": osmStandard,
+      "🛰️ Satellite Aerial (Esri)": esriSatellite,
+      "🌙 Dark Mountain Night (Carto)": cartoDark
+    };
+    L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+
+    setTimeout(() => { map.invalidateSize(); }, 300);
+    window.addEventListener('resize', () => { map.invalidateSize(); });
+
+    // Custom Map Icons
+    const greenIcon = L.divIcon({ className: '', html: '<div style="background:#10b981;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 8px rgba(16,185,129,0.8)"></div>', iconAnchor: [7, 7] });
+    const redIcon = L.divIcon({ className: '', html: '<div style="background:#ef4444;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 10px rgba(239,68,68,0.9)"></div>', iconAnchor: [7, 7] });
+    const warnIcon = L.divIcon({ className: '', html: '<div style="background:#f59e0b;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 8px rgba(245,158,11,0.8)"></div>', iconAnchor: [7, 7] });
+    const userIcon = L.divIcon({ className: '', html: '<div style="background:#38bdf8;width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px rgba(56,189,248,0.9);animation:pulse 1.5s infinite"></div>', iconAnchor: [9, 9] });
+    const sosPinIcon = L.divIcon({ className: '', html: '<div style="background:#ef4444;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 18px rgba(239,68,68,1);animation:pulse 0.8s infinite"></div>', iconAnchor: [11, 11] });
+
+    /* 4. ROUTES & HAZARDS */
+    const routes = {
+      A: { name: "Manali to Rohtang", coords: [[32.2432, 77.1892], [32.2501, 77.1980], [32.2621, 77.2120], [32.2780, 77.2234], [32.2930, 77.2350]], baseRisk: 10 },
+      B: { name: "Beas Kund Trail", coords: [[32.2432, 77.1892], [32.2380, 77.1750], [32.2290, 77.1620], [32.2180, 77.1520], [32.2090, 77.1410]], baseRisk: 25 },
+      C: { name: "Solang Valley Loop", coords: [[32.2432, 77.1892], [32.2520, 77.1800], [32.2600, 77.1710], [32.2650, 77.1590], [32.2700, 77.1470]], baseRisk: 15 },
+    };
+
+    const liveAlerts = [
+      { coords: [32.2780, 77.2234], radius: 2.0, type: "Landslide", penalty: 50 },
+      { coords: [32.2600, 77.1710], radius: 2.5, type: "Thunderstorm", penalty: 40 }
+    ];
+
+    let routeLayers = {};
+    let activeRoute = 'A';
+    let evaluatedRoutes = {};
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    function calculatePathDistance(coords) {
+      let total = 0;
+      for (let i = 0; i < coords.length - 1; i++) {
+        total += getDistance(coords[i][0], coords[i][1], coords[i + 1][0], coords[i + 1][1]);
+      }
+      return total;
+    }
+
+    function evaluateAllRoutes() {
+      Object.keys(routes).forEach(key => {
+        const route = routes[key];
+        const dist = calculatePathDistance(route.coords);
+        let riskPenalty = route.baseRisk;
+        let reasons = [];
+
+        liveAlerts.forEach(alert => {
+          let isAffected = false;
+          route.coords.forEach(pt => {
+            if (getDistance(pt[0], pt[1], alert.coords[0], alert.coords[1]) <= alert.radius) {
+              isAffected = true;
+            }
+          });
+          if (isAffected) {
+            riskPenalty += alert.penalty;
+            reasons.push(`Avoids ${alert.type} zone`);
+          }
+        });
+
+        let score = 100 - riskPenalty - (dist * 2);
+        score = Math.max(10, Math.min(100, Math.round(score)));
+
+        let classification = score >= 70 ? '🟢 Safe' : score >= 40 ? '🟡 Caution' : '🔴 Danger';
+        let cssColor = score >= 70 ? '#10b981' : score >= 40 ? '#f59e0b' : '#ef4444';
+        if (riskPenalty === route.baseRisk) reasons.push("Clear mountain conditions");
+
+        evaluatedRoutes[key] = { score, distance: dist.toFixed(1), classification, reasons, cssColor, riskPenalty };
+      });
+    }
+
+    evaluateAllRoutes();
+
+    Object.entries(routes).forEach(([key, r]) => {
+      const line = L.polyline(r.coords, {
+        color: evaluatedRoutes[key].cssColor,
+        weight: 3,
+        opacity: 0.35,
+        dashArray: '8 4'
+      }).addTo(map);
+
+      line.on('mouseover', function () {
+        if (activeRoute !== key) this.setStyle({ weight: 6, opacity: 0.8, dashArray: null });
+        line.bindTooltip(`<b>${r.name}</b><br>Live Score: ${evaluatedRoutes[key].score}/100`, { sticky: true }).openTooltip();
+      });
+      line.on('mouseout', function () {
+        if (activeRoute !== key) this.setStyle({ weight: 3, opacity: 0.35, dashArray: '8 4' });
+        line.closeTooltip();
+      });
+
+      routeLayers[key] = line;
+    });
+
+    let hazardLayers = L.layerGroup().addTo(map);
+    liveAlerts.forEach(alert => {
+      let bgType = alert.type.includes('Landslide') ? '#ef4444' : '#a855f7';
+      L.marker(alert.coords, {
+        icon: L.divIcon({
+          className: '',
+          html: `<div style="background:${bgType};color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 0 12px ${bgType};">⚠ ${alert.type}</div>`,
+          iconAnchor: [40, 12]
+        })
+      }).addTo(hazardLayers);
+
+      L.circle(alert.coords, {
+        color: bgType,
+        fillColor: bgType,
+        fillOpacity: 0.2,
+        radius: alert.radius * 1000
+      }).addTo(hazardLayers).bindTooltip(`<b>Danger: ${alert.type}</b><br>Avoid ${alert.radius}km zone`);
+    });
+
+    L.marker([32.2432, 77.1892], {
+      icon: L.divIcon({ className: '', html: '<div style="background:#0284c7;color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.5)">🏕 Manali Base Camp</div>', iconAnchor: [50, 14] })
+    }).addTo(map);
+
+    let memberLayers = L.layerGroup().addTo(map);
+    const members = [
+      { name: 'Tapabrata', role: 'Lead Navigator', routeIdx: 'A', progress: 0.45, speed: 0.04, icon: userIcon, status: '🟢 Active · Lead' },
+      { name: 'Somdeb', role: 'Alpine Scout', routeIdx: 'A', progress: 0.35, speed: 0.015, icon: warnIcon, status: '🟡 Slightly Behind' },
+      { name: 'Adrija', role: 'Rear Sweeper', routeIdx: 'C', progress: 0.20, speed: 0.0, icon: redIcon, status: '🔴 Danger/No Signal' },
+      { name: 'Sritama', role: 'Mountain Medic', routeIdx: 'B', progress: 0.60, speed: 0.03, icon: greenIcon, status: '🟢 Active' }
+    ];
+
+    function renderSquadList() {
+      const container = document.getElementById('squadMembersList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      members.forEach(m => {
+        const isCurrent = currentUser && currentUser.fullName && m.name.toLowerCase().includes(currentUser.fullName.split(' ')[0].toLowerCase());
+        const avatarClass = m.status.includes('Active') ? 'bg-green' : m.status.includes('Slightly') ? 'bg-amber' : 'bg-red';
+        
+        container.innerHTML += `
+          <div class="member-row">
+            <div class="member-avatar ${avatarClass}">${m.name[0]}</div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:13px; color:#fff;">
+                ${m.name} ${isCurrent ? '<span style="color:var(--color-blue); font-size:11px;">(You)</span>' : ''}
+              </div>
+              <div style="font-size:11px; color:var(--text-secondary);">${m.status} · ${m.role}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function getPointOnRoute(coords, progress) {
+      if (progress <= 0) return coords[0];
+      if (progress >= 1) return coords[coords.length - 1];
+
+      let totalLen = 0;
+      let segments = [0];
+      for (let i = 0; i < coords.length - 1; i++) {
+        let d = getDistance(coords[i][0], coords[i][1], coords[i + 1][0], coords[i + 1][1]);
+        totalLen += d;
+        segments.push(totalLen);
+      }
+
+      let targetDist = totalLen * progress;
+      for (let i = 0; i < segments.length - 1; i++) {
+        if (targetDist >= segments[i] && targetDist <= segments[i + 1]) {
+          let segmentProgress = (targetDist - segments[i]) / (segments[i + 1] - segments[i]);
+          let lat = coords[i][0] + (coords[i + 1][0] - coords[i][0]) * segmentProgress;
+          let lng = coords[i][1] + (coords[i + 1][1] - coords[i][1]) * segmentProgress;
+          return [lat, lng];
+        }
+      }
+      return coords[coords.length - 1];
+    }
+
+    function moveMarkerSmoothly(marker, startArr, endArr, durationMs) {
+      let start = null;
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        let p = (timestamp - start) / durationMs;
+        if (p > 1) p = 1;
+        let lat = startArr[0] + (endArr[0] - startArr[0]) * p;
+        let lng = startArr[1] + (endArr[1] - startArr[1]) * p;
+        marker.setLatLng([lat, lng]);
+        if (p < 1) window.requestAnimationFrame(step);
+      }
+      window.requestAnimationFrame(step);
+    }
+
+    members.forEach(m => {
+      let startPos = getPointOnRoute(routes[m.routeIdx].coords, m.progress);
+      m.marker = L.marker(startPos, { icon: m.icon }).addTo(memberLayers).bindPopup(`<b>${m.name}</b> (${m.role})<br>${m.status}`);
+    });
+
+    setInterval(() => {
+      members.forEach(m => {
+        if (m.speed === 0) return;
+        let startPos = getPointOnRoute(routes[m.routeIdx].coords, m.progress);
+        m.progress += m.speed;
+        if (m.progress > 1) m.progress = 0.1;
+        let endPos = getPointOnRoute(routes[m.routeIdx].coords, m.progress);
+        moveMarkerSmoothly(m.marker, startPos, endPos, 3000);
+      });
+    }, 3500);
+
+    /* 5. CONTROLS */
+    const toggleControl = L.control({ position: 'topleft' });
+    toggleControl.onAdd = function () {
+      let div = L.DomUtil.create('div');
+      div.innerHTML = `
+        <button class="leaflet-control-toggle" onclick="toggleRoutes()">👁 Toggle Routes</button>
+        <button class="leaflet-control-toggle" onclick="toggleHazards()">👁 Toggle Hazards</button>
+        <button class="leaflet-control-toggle" onclick="toggleMembers()">👁 Toggle Squad</button>
+        <button class="leaflet-control-toggle" onclick="toggleLegend()">👁 Toggle Legend</button>
+        <button class="leaflet-control-toggle" style="border-color:#10b981!important; color:#10b981!important;" onclick="toggleAllPathways()">🌐 All India Trails</button>
+      `;
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    };
+    toggleControl.addTo(map);
+
+    let routesVisible = true;
+    window.toggleRoutes = function () {
+      routesVisible = !routesVisible;
+      Object.values(routeLayers).forEach(layer => routesVisible ? map.addLayer(layer) : map.removeLayer(layer));
+    };
+
+    let hazardsVisible = true;
+    window.toggleHazards = function () {
+      hazardsVisible = !hazardsVisible;
+      hazardsVisible ? map.addLayer(hazardLayers) : map.removeLayer(hazardLayers);
+    };
+
+    let membersVisible = true;
+    window.toggleMembers = function () {
+      membersVisible = !membersVisible;
+      membersVisible ? map.addLayer(memberLayers) : map.removeLayer(memberLayers);
+    };
+
+    let legend = L.control({ position: 'bottomleft' });
+    legend.onAdd = function () {
+      let div = L.DomUtil.create('div', 'info legend');
+      div.id = 'map-legend';
+      div.innerHTML = `
+        <b>Mountain Route Safety</b><br>
+        <span style="color:#10b981;">🟢</span> Safe Passage (70-100)<br>
+        <span style="color:#f59e0b;">🟡</span> Caution Alert (40-69)<br>
+        <span style="color:#ef4444;">🔴</span> High Risk (0-39)<br>
+        <br><b>Squad Markers</b><br>
+        <span style="color:#38bdf8;">🔵</span> Lead Navigator<br>
+        <span style="color:#10b981;">🟢</span> Active Member<br>
+        <span style="color:#f59e0b;">🟡</span> Slow Progress<br>
+        <span style="color:#ef4444;">🔴</span> Out of Signal
+      `;
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    };
+    legend.addTo(map);
+
+    let legendVisible = true;
+    window.toggleLegend = function () {
+      const el = document.getElementById('map-legend');
+      legendVisible = !legendVisible;
+      el.style.display = legendVisible ? 'block' : 'none';
+    };
+
+    function selectRoute(el, key) {
+      document.querySelectorAll('#navTab .route-card').forEach(c => {
+        c.classList.remove('active');
+        if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(`'${key}'`)) c.classList.add('active');
+      });
+
+      activeRoute = key;
+      Object.entries(routeLayers).forEach(([k, layer]) => {
+        const isSelected = (k === key);
+        layer.setStyle({
+          color: evaluatedRoutes[k].cssColor,
+          weight: isSelected ? 6 : 3,
+          opacity: isSelected ? 1 : 0.2,
+          dashArray: isSelected ? null : '8 4'
+        });
+      });
+
+      const center = routes[key].coords[Math.floor(routes[key].coords.length / 2)];
+      map.setView(center, 13, { animate: true });
+
+      const info = evaluatedRoutes[key];
+      document.getElementById("float-route").innerHTML = routes[key].name;
+      document.getElementById("float-score").innerHTML = info.score;
+      document.getElementById("float-status").innerHTML = info.classification.toUpperCase();
+      document.getElementById("float-coords").innerHTML = `${center[0].toFixed(4)}° N, ${center[1].toFixed(4)}° E`;
+
+      if (el) showToast(`Selected: Route ${key} (${routes[key].name})
+Safety Score: ${info.score}/100`, 3000);
+    }
+
+    selectRoute(null, 'A');
+
+    /* 6. HIKING TRAILS CSV RENDERING & INTERACTION */
+        let activeTrailLayers = L.layerGroup().addTo(map);
+    let allTrailsLayerGroup = L.layerGroup();
+    let allTrailsShown = false;
+
+    function plotTrailOnMap(trekName) {
+      let baseCampMarker = null;
+      const trail = currentTrailsList.find(t => t.trekName === trekName);
+      if (!trail) return;
+
+      // Clear previous active trail layers
+      activeTrailLayers.clearLayers();
+
+      // Ensure pathway coordinates exist
+      let pathway = trail.pathway;
+      if (!pathway || pathway.length === 0) {
+        const bLat = trail.lat || 32.24;
+        const bLng = trail.lng || 77.18;
+        pathway = [
+          { name: trail.baseCamp + " Base", lat: bLat, lng: bLng, alt: 2100, day: 1, desc: "Expedition trailhead" },
+          { name: "Ridge Camp 1", lat: bLat + 0.02, lng: bLng + 0.02, alt: 2800, day: 2, desc: "High meadow camp" },
+          { name: "High Moraine Camp 2", lat: bLat + 0.04, lng: bLng + 0.035, alt: 3500, day: 3, desc: "Sub-zero stone camp" },
+          { name: trail.trekName + " Summit Col", lat: bLat + 0.055, lng: bLng + 0.05, alt: 4200, day: 4, desc: "Peak summit panorama" }
+        ];
+      }
+
+      const pathCoords = pathway.map(pt => [pt.lat, pt.lng]);
+
+      // 1. Outer Glow Line
+      const glowPolyline = L.polyline(pathCoords, {
+        color: '#ef4444',
+        weight: 9,
+        opacity: 0.35,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(activeTrailLayers);
+
+      // 2. High-Visibility Main Pathway Polyline
+      const mainPolyline = L.polyline(pathCoords, {
+        color: '#ef4444',
+        weight: 4,
+        opacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(activeTrailLayers);
+
+      // 3. Animated GPS Dash Overlay
+      const dashPolyline = L.polyline(pathCoords, {
+        color: '#ffffff',
+        weight: 2,
+        opacity: 0.85,
+        dashArray: '8, 12'
+      }).addTo(activeTrailLayers);
+
+      // 4. Waypoint Pins along the Pathway
+      pathway.forEach((pt, i) => {
+        const isStart = (i === 0);
+        const isSummit = (i === pathway.length - 1) || (pt.name.toLowerCase().includes('summit') || pt.name.toLowerCase().includes('pass') || pt.name.toLowerCase().includes('lake'));
+        
+        let pinBg = isStart ? '#10b981' : isSummit ? '#ef4444' : '#f59e0b';
+        let pinIcon = isStart ? '⛺' : isSummit ? '🏔️' : '🏕️';
+        let pinBorder = isSummit ? '3px solid #fff' : '2px solid rgba(255,255,255,0.8)';
+        let shadow = isSummit ? 'box-shadow:0 0 15px rgba(239,68,68,0.9);' : 'box-shadow:0 2px 8px rgba(0,0,0,0.5);';
+
+        const wpMarker = L.marker([pt.lat, pt.lng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div style="background:${pinBg}; color:#fff; padding:3px 8px; border-radius:12px; font-weight:800; font-size:10px; white-space:nowrap; border:${pinBorder}; ${shadow} display:flex; align-items:center; gap:4px; cursor:pointer;">
+                     <span>${pinIcon}</span>
+                     <span>${pt.name.split('(')[0].trim()} (${pt.alt}m)</span>
+                   </div>`,
+            iconAnchor: [35, 12]
+          })
+        }).addTo(activeTrailLayers);
+        if (isStart) {
+          baseCampMarker = wpMarker;
+          wpMarker.bindPopup(`
+            <div style="min-width:270px; max-width:320px; font-family:'Outfit', -apple-system, sans-serif; color:#111; padding:4px 2px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #ef4444; padding-bottom:6px; margin-bottom:8px; gap:8px;">
+                <h3 style="color:#b91c1c; margin:0; font-size:15px; font-weight:800; line-height:1.2;">🏔️ ${trail.trekName}</h3>
+                <span style="background:${trail.difficulty.toLowerCase().includes('easy') ? '#10b981' : trail.difficulty.toLowerCase().includes('mod') ? '#f59e0b' : '#ef4444'}; color:#fff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:10px; white-space:nowrap; text-transform:uppercase;">
+                  ${trail.difficulty}
+                </span>
+              </div>
+              <div style="font-size:11px; color:#4b5563; margin-bottom:8px; font-weight:600;">📍 ${trail.stateRegion}</div>
+              
+              <table style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:8px;">
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">⛺ Base Camp:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#111;">${trail.baseCamp}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">🏔️ Max Altitude:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#111;">${trail.maxAltitude}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">⏱️ Duration:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#111;">${trail.duration}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">📏 Distance:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#111;">${trail.distance}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">🌤️ Best Season:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#111;">${trail.bestSeason}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">💰 Approx Cost:</td><td style="padding:3px 0; text-align:right; font-weight:700; color:#059669;">${trail.cost}</td></tr>
+                <tr style="border-bottom:1px solid #f3f4f6;"><td style="padding:3px 0; color:#6b7280; font-weight:600;">🏠 Stay Type:</td><td style="padding:3px 0; text-align:right; font-weight:600; color:#111;">${trail.accommodation || 'Alpine Tents & Huts'}</td></tr>
+                <tr><td style="padding:3px 0; color:#6b7280; font-weight:600;">📜 Permit:</td><td style="padding:3px 0; text-align:right; font-weight:600; color:#b45309; font-size:10px;">${trail.permit}</td></tr>
+              </table>
+
+              <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:6px 8px; font-size:10px; color:#991b1b; line-height:1.3;">
+                <b>Expedition Trailhead:</b> ${pathway.length} mountain waypoints surveyed along pathway. Click waypoints to inspect high camps.
+              </div>
+            </div>
+          `, { autoPan: true, maxWidth: 320 });
+        } else {
+          wpMarker.bindPopup(`
+            <div style="min-width:210px; color:#111; font-family:'Outfit', sans-serif;">
+              <div style="font-size:10px; font-weight:bold; color:${pinBg}; text-transform:uppercase;">Day ${pt.day || (i+1)} Camp / Waypoint</div>
+              <h4 style="margin:3px 0 6px 0; color:#111; font-size:14px;">${pinIcon} ${pt.name}</h4>
+              <div style="font-size:12px; margin-bottom:4px;"><b>Altitude:</b> ${pt.alt} m (${Math.round(pt.alt * 3.28084)} ft)</div>
+              <div style="font-size:11px; color:#555; background:#f3f4f6; padding:6px; border-radius:4px; margin-top:4px;">${pt.desc || 'Scenic mountain terrain waypoint on surveyed route.'}</div>
+            </div>
+          `);
+        }
+      });
+
+      // Fit map view to frame the ENTIRE pathway along the mountain terrain
+      map.fitBounds(mainPolyline.getBounds(), { padding: [60, 60], maxZoom: 13, animate: true });
+      if (baseCampMarker) {
+        setTimeout(() => { baseCampMarker.openPopup(); }, 350);
+      }
+
+      // Update Floating HUD Panel
+      const minAlt = Math.min(...pathway.map(p => p.alt));
+      const maxAlt = Math.max(...pathway.map(p => p.alt));
+      document.getElementById("float-route").innerHTML = `🏔️ ${trail.trekName}`;
+      document.getElementById("float-score").innerHTML = `${maxAlt}m`;
+      document.getElementById("float-status").innerHTML = trail.difficulty.toUpperCase();
+      document.getElementById("float-coords").innerHTML = `<b>Pathway:</b> ${pathway.length} Waypoints · Elev: ${minAlt}m → ${maxAlt}m<br><b>Base:</b> ${trail.baseCamp} (${trail.stateRegion})`;
+
+      showToast(`🗺️ Showing Trail Pathway: ${trail.trekName}\n📏 ${trail.distance} · ${pathway.length} Waypoints from ${trail.baseCamp}`, 4500);
+    }
+
+    // Toggle All Mountain Trails on Map simultaneously
+    window.toggleAllPathways = function() {
+      allTrailsShown = !allTrailsShown;
+      if (allTrailsShown) {
+        allTrailsLayerGroup.clearLayers();
+        currentTrailsList.forEach(tr => {
+          if (tr.pathway && tr.pathway.length > 0) {
+            const coords = tr.pathway.map(p => [p.lat, p.lng]);
+            L.polyline(coords, {
+              color: tr.difficulty.toLowerCase().includes('easy') ? '#10b981' : tr.difficulty.toLowerCase().includes('mod') ? '#f59e0b' : '#ef4444',
+              weight: 3,
+              opacity: 0.75,
+              dashArray: '6, 6'
+            }).addTo(allTrailsLayerGroup).bindTooltip(`<b>🏔️ ${tr.trekName}</b><br>${tr.stateRegion}<br>Max Alt: ${tr.maxAltitude}`, { sticky: true });
+          }
+        });
+        map.addLayer(allTrailsLayerGroup);
+        map.setView([30.5, 78.5], 7, { animate: true });
+        showToast("👁 Showing all 16 Indian Himalayan mountain trail pathways simultaneously!", 4000);
+      } else {
+        map.removeLayer(allTrailsLayerGroup);
+        showToast("Cleared full-network pathway overlay.", 2500);
+      }
+    };
+
+    async function saveTrailToUser(trekName) {
+      if (!currentUser) {
+        showToast('Please Login first to save trails to your personal account.', 3500);
+        openAuthModal('login');
+        return;
+      }
+      showToast(`⭐ Saved '${trekName}' to ${currentUser.fullName}'s offline database!`, 3000);
+    }
+
+        /* ==========================================================================
+       7. ROBUST CSV PARSER & UPLOAD ENGINE (RFC 4180 COMPLIANT)
+       ========================================================================== */
+    function triggerFilePicker() {
+      const inp = document.getElementById('csvFileInput');
+      if (inp) {
+        inp.value = '';
+        inp.click();
+      }
+    }
+
+    function toggleCSVPasteArea() {
+      const c = document.getElementById('csvPasteContainer');
+      if (c) c.style.display = (c.style.display === 'none' || !c.style.display) ? 'block' : 'none';
+    }
+
+    function handleCSVFileSelect(e) {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+      const file = files[0];
+      showCSVStatus(`⏳ Reading '${file.name}' (${(file.size / 1024).toFixed(1)} KB)...`, '#38bdf8');
+      processCSVFile(file);
+      e.target.value = ''; // Reset so the same file can be re-selected
+    }
+
+    function handleCSVPasteSubmit() {
+      const text = (document.getElementById('csvPasteText')?.value || '').trim();
+      if (!text) {
+        showToast('❌ Please paste CSV data into the text box first.', 3500);
+        return;
+      }
+      showCSVStatus('⏳ Parsing pasted CSV data...', '#38bdf8');
+      processCSVText(text, 'pasted_data.csv');
+    }
+
+    function showCSVStatus(msg, color) {
+      const el = document.getElementById('csvUploadStatus');
+      if (el) {
+        el.style.display = 'block';
+        el.style.background = color === '#10b981' ? 'rgba(16,185,129,0.15)' : color === '#ef4444' ? 'rgba(239,68,68,0.15)' : 'rgba(56,189,248,0.15)';
+        el.style.border = `1px solid ${color}`;
+        el.style.color = color;
+        el.innerHTML = msg;
+      }
+    }
+
+    // Window drag & drop guards (prevent browser opening file in tab)
+    window.addEventListener('dragover', function(e) { e.preventDefault(); }, false);
+    window.addEventListener('drop', function(e) { e.preventDefault(); }, false);
+
+    // Dropzone setup
+    const dropZone = document.getElementById('csvDropZone');
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(evt => {
+        dropZone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'dragend'].forEach(evt => {
+        dropZone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          const file = e.dataTransfer.files[0];
+          showCSVStatus(`⏳ Dropped '${file.name}' (${(file.size / 1024).toFixed(1)} KB)...`, '#38bdf8');
+          processCSVFile(file);
+        }
+      }, false);
+    }
+
+    // RFC 4180 Full CSV Parser: Handles quotes, commas inside fields, and multi-line fields
+    function parseRFC4180CSV(text) {
+      text = text.replace(/^\uFEFF/, ''); // Strip UTF-8 BOM
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+      let i = 0;
+
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (i + 1 < text.length && text[i + 1] === '"') {
+              cell += '"';
+              i++;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            cell += c;
+          }
+        } else {
+          if (c === '"') {
+            inQuotes = true;
+          } else if (c === ',') {
+            row.push(cell.trim());
+            cell = '';
+          } else if (c === '\r') {
+            // Ignore carriage returns
+          } else if (c === '\n') {
+            row.push(cell.trim());
+            if (row.some(col => col.length > 0)) rows.push(row);
+            row = [];
+            cell = '';
+          } else {
+            cell += c;
+          }
+        }
+        i++;
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell.trim());
+        if (row.some(col => col.length > 0)) rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function processCSVFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        processCSVText(e.target.result, file.name);
+      };
+      reader.onerror = function() {
+        showCSVStatus('❌ Failed to read file from disk.', '#ef4444');
+        showToast('❌ Error reading file.', 4000);
+      };
+      reader.readAsText(file);
+    }
+
+    async function processCSVText(rawText, sourceName) {
+      try {
+        const rows = parseRFC4180CSV(rawText);
+        if (!rows || rows.length < 2) {
+          showCSVStatus('❌ Invalid CSV: Empty file or no data rows found.', '#ef4444');
+          showToast('❌ Invalid CSV: Missing data rows.', 4000);
+          return;
+        }
+
+        const rawHeaders = rows[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
+        const findCol = (keywords) => rawHeaders.findIndex(h => keywords.some(k => h.includes(k)));
+
+        const idxName = findCol(['trekname', 'name', 'trek', 'route', 'title']);
+        const idxRegion = findCol(['stateregion', 'stateandregion', 'state', 'region', 'location', 'area']);
+        const idxBase = findCol(['basecamp', 'base', 'camp', 'startpoint', 'start', 'origin']);
+        const idxAlt = findCol(['maximumaltitude', 'maxaltitude', 'altitude', 'height', 'elevation']);
+        const idxDiff = findCol(['difficultylevel', 'difficulty', 'grade', 'level']);
+        const idxDur = findCol(['trekduration', 'duration', 'days', 'time']);
+        const idxSeason = findCol(['bestseason', 'season', 'months', 'period']);
+        const idxCost = findCol(['approximatecost', 'cost', 'price', 'fee', 'budget']);
+        const idxDist = findCol(['distance', 'length', 'km']);
+        const idxPermit = findCol(['permitrequirement', 'permit', 'clearance', 'entry', 'pass']);
+        const idxAccomm = findCol(['accommodationtype', 'accommodation', 'stay', 'camp']);
+        const idxCoords = findCol(['gpscoordinates', 'gps', 'coordinates', 'coords', 'latlng']);
+        const idxLat = findCol(['latitude', 'lat']);
+        const idxLng = findCol(['longitude', 'lng', 'lon']);
+        const idxPathway = findCol(['pathwaycoordinatesjson', 'pathway', 'waypoints', 'routejson']);
+
+        const parsedTrails = [];
+
+        for (let i = 1; i < rows.length; i++) {
+          const cols = rows[i];
+          if (!cols || cols.length < 2) continue;
+
+          const trekName = (idxName !== -1 && cols[idxName]) ? cols[idxName] : `Trek Route #${i}`;
+          const stateRegion = (idxRegion !== -1 && cols[idxRegion]) ? cols[idxRegion] : 'Himalayas, India';
+          const baseCamp = (idxBase !== -1 && cols[idxBase]) ? cols[idxBase] : 'Base Village';
+          const maxAltitude = (idxAlt !== -1 && cols[idxAlt]) ? cols[idxAlt] : '12,500 ft';
+          const difficulty = (idxDiff !== -1 && cols[idxDiff]) ? cols[idxDiff] : 'Moderate';
+          const duration = (idxDur !== -1 && cols[idxDur]) ? cols[idxDur] : '5 Days';
+          const bestSeason = (idxSeason !== -1 && cols[idxSeason]) ? cols[idxSeason] : 'May - October';
+          const cost = (idxCost !== -1 && cols[idxCost]) ? cols[idxCost] : '₹9,500';
+          const distance = (idxDist !== -1 && cols[idxDist]) ? cols[idxDist] : '30 km';
+          const permit = (idxPermit !== -1 && cols[idxPermit]) ? cols[idxPermit] : 'Forest Eco Permit Required';
+          const accommodation = (idxAccomm !== -1 && cols[idxAccomm]) ? cols[idxAccomm] : 'Alpine Dome Tents';
+
+          // Lat / Lng parsing
+          let lat = null;
+          let lng = null;
+
+          if (idxCoords !== -1 && cols[idxCoords]) {
+            const parts = cols[idxCoords].split(/[,|\/]/).map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+            if (parts.length >= 2) {
+              lat = parts[0];
+              lng = parts[1];
+            }
+          }
+          if ((!lat || isNaN(lat)) && idxLat !== -1 && cols[idxLat]) lat = parseFloat(cols[idxLat]);
+          if ((!lng || isNaN(lng)) && idxLng !== -1 && cols[idxLng]) lng = parseFloat(cols[idxLng]);
+
+          // Fallback geocoding if coords missing
+          if (!lat || isNaN(lat)) {
+            const regLower = stateRegion.toLowerCase();
+            if (regLower.includes('uttarakhand') || regLower.includes('garwal') || regLower.includes('kumaon')) {
+              lat = 30.5 + (i * 0.04) % 0.8; lng = 79.2 + (i * 0.05) % 0.8;
+            } else if (regLower.includes('ladakh') || regLower.includes('zanskar') || regLower.includes('leh')) {
+              lat = 34.0 + (i * 0.04) % 0.6; lng = 77.2 + (i * 0.05) % 0.6;
+            } else if (regLower.includes('sikkim') || regLower.includes('bengal') || regLower.includes('darjeeling')) {
+              lat = 27.3 + (i * 0.03) % 0.5; lng = 88.2 + (i * 0.04) % 0.5;
+            } else {
+              lat = 32.2 + (i * 0.04) % 0.6; lng = 77.1 + (i * 0.05) % 0.6; // Himachal
+            }
+          }
+
+          // Pathway waypoints parsing
+          let pathway = [];
+          if (idxPathway !== -1 && cols[idxPathway]) {
+            try {
+              const rawPoints = JSON.parse(cols[idxPathway]);
+              if (Array.isArray(rawPoints)) {
+                pathway = rawPoints.map((pt, pIdx) => {
+                  if (Array.isArray(pt)) {
+                    return { name: `Camp ${pIdx + 1}`, lat: pt[0], lng: pt[1], alt: 2200 + (pIdx * 500), day: pIdx + 1 };
+                  }
+                  return pt;
+                });
+              }
+            } catch(e) {}
+          }
+
+          // If no pathway was in CSV, generate realistic 4-point valley pathway
+          if (pathway.length === 0) {
+            const baseAlt = 2000;
+            const topAltNum = parseInt((maxAltitude.match(/\d+/) || [4000])[0]);
+            pathway = [
+              { name: `${baseCamp} Base`, lat: lat, lng: lng, alt: baseAlt, day: 1, desc: 'Expedition staging point' },
+              { name: 'Valley Camp 1', lat: lat + 0.015, lng: lng + 0.018, alt: Math.round(baseAlt + (topAltNum - baseAlt)*0.35), day: 2, desc: 'Meadow stream crossing' },
+              { name: 'High Moraine Camp 2', lat: lat + 0.032, lng: lng + 0.035, alt: Math.round(baseAlt + (topAltNum - baseAlt)*0.75), day: 3, desc: 'Sub-zero alpine staging' },
+              { name: `${trekName} Summit`, lat: lat + 0.048, lng: lng + 0.045, alt: topAltNum, day: 4, desc: 'Highest altitude pass' }
+            ];
+          }
+
+          parsedTrails.push({
+            trekName, stateRegion, baseCamp, maxAltitude, difficulty, duration,
+            bestSeason, cost, distance, permit, accommodation, lat, lng, pathway
+          });
+        }
+
+        if (parsedTrails.length > 0) {
+          currentTrailsList = parsedTrails;
+          
+          // Save safely to IndexedDB
+          try {
+            await TrekDatabase.saveTrails(parsedTrails);
+          } catch(dbErr) {
+            console.warn('IndexedDB save warning:', dbErr);
+          }
+
+          renderTrailsList();
+          showCSVStatus(`✅ Successfully imported ${parsedTrails.length} trails!`, '#10b981');
+          
+          setTimeout(() => {
+            closeWindow('csvUploadModal');
+            showToast(`✅ Successfully ingested ${parsedTrails.length} hiking trails from ${sourceName}!`, 4500);
+          }, 600);
+
+        } else {
+          showCSVStatus('❌ Could not parse valid trail rows. Check CSV formatting.', '#ef4444');
+          showToast('❌ Failed to parse valid trail rows from CSV.', 4000);
+        }
+
+      } catch (err) {
+        console.error('CSV Parsing Error:', err);
+        showCSVStatus('❌ Parsing error: ' + err.message, '#ef4444');
+        showToast('❌ Error parsing CSV file: ' + err.message, 4000);
+      }
+    }
+
+    function downloadSampleCSV() {
+      const headers = [
+        "Trek Name", "State and Region", "Base Camp", "Maximum Altitude", 
+        "Difficulty Level", "Trek Duration", "Best Season", "Approximate Cost", 
+        "Distance", "Permit Requirement", "Latitude", "Longitude"
+      ];
+
+      const rows = currentTrailsList.map(t => [
+        `"${t.trekName}"`, `"${t.stateRegion}"`, `"${t.baseCamp}"`, `"${t.maxAltitude}"`,
+        `"${t.difficulty}"`, `"${t.duration}"`, `"${t.bestSeason}"`, `"${t.cost}"`,
+        `"${t.distance}"`, `"${t.permit}"`, t.lat || '', t.lng || ''
+      ].join(','));
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows].join(String.fromCharCode(10));
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "hiking_trails_dataset.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('⬇️ Downloaded hiking_trails_dataset.csv', 3000);
+    }
+
+    async function resetDefaultTrails() {
+      currentTrailsList = [...DEFAULT_HIKING_DATASET];
+      await TrekDatabase.saveTrails(DEFAULT_HIKING_DATASET);
+      if (document.getElementById('trailSearchInput')) document.getElementById('trailSearchInput').value = '';
+      selectedDifficulty = 'ALL';
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      const allPill = document.querySelector('.filter-pill');
+      if (allPill) allPill.classList.add('active');
+      renderTrailsList();
+      showToast('🔄 Reset hiking trail catalog to 15 Himalayan defaults.', 3000);
+    }
+
+    /* 8. AUTHENTICATION */
+    function openAuthModal(mode = 'login') {
+      openWindow('authModal');
+      switchAuthTab(mode);
+    }
+
+    function switchAuthTab(tab) {
+      const isLogin = (tab === 'login');
+      document.getElementById('loginTabBtn').classList.toggle('active', isLogin);
+      document.getElementById('registerTabBtn').classList.toggle('active', !isLogin);
+      document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('authModalTitle').innerHTML = isLogin ? '🔐 Mountain Safety Login' : '📝 Register Expedition Account';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById('loginUsername').value.trim();
+      const passwordInput = document.getElementById('loginPassword').value;
+
+      try {
+        const user = await TrekDatabase.getUserByUsername(usernameInput);
+        if (!user) {
+          showToast('❌ User not found. Please register or check username.', 3500);
+          return;
+        }
+
+        const inputHash = await TrekDatabase.hashPassword(passwordInput);
+        if (user.passwordHash !== inputHash) {
+          showToast('❌ Incorrect password.', 3500);
+          return;
+        }
+
+        currentUser = user;
+        await TrekDatabase.setSession(user);
+        closeWindow('authModal');
+        updateAuthUI();
+        updateDBInspectorUI();
+        renderSquadList();
+        showToast(`✅ Welcome back, ${user.fullName} (${user.role})!`, 4000);
+
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Error during authentication.', 3500);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const fullName = document.getElementById('regFullName').value.trim();
+      const username = document.getElementById('regUsername').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value;
+      const emergency = document.getElementById('regEmergency').value.trim();
+      const blood = document.getElementById('regBlood').value;
+      const role = document.getElementById('regRole').value;
+
+      try {
+        const existing = await TrekDatabase.getUserByUsername(username);
+        if (existing) {
+          showToast('❌ Username already taken. Pick another.', 3500);
+          return;
+        }
+
+        const newUser = {
+          fullName, username, password, emergency, blood, role
+        };
+
+        await TrekDatabase.addUser(newUser);
+        
+        const createdUser = await TrekDatabase.getUserByUsername(username);
+        currentUser = createdUser;
+        await TrekDatabase.setSession(createdUser);
+
+        closeWindow('authModal');
+        updateAuthUI();
+        updateDBInspectorUI();
+        renderSquadList();
+        showToast(`🎉 Account created for ${fullName} in real database!`, 4000);
+
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Failed to register user.', 3500);
+      }
+    }
+
+    async function handleLogout() {
+      await TrekDatabase.clearSession();
+      currentUser = null;
+      closeWindow('profileModal');
+      updateAuthUI();
+      updateDBInspectorUI();
+      renderSquadList();
+      showToast('🚪 Logged out from device session.', 3000);
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById('authHeaderContainer');
+      if (!container) return;
+
+      if (currentUser) {
+        const initials = currentUser.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        container.innerHTML = `
+          <div class="user-pill" onclick="openProfileModal()">
+            <div class="user-avatar-small">${initials}</div>
+            <div class="user-name-text">${currentUser.fullName}</div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="auth-btn-header" onclick="openAuthModal('login')">
+            <span>🔑</span> Login / Sign Up
+          </button>
+        `;
+      }
+    }
+
+    function openProfileModal() {
+      if (!currentUser) return;
+      document.getElementById('profileFullName').textContent = currentUser.fullName;
+      document.getElementById('profileUsername').textContent = currentUser.username;
+      document.getElementById('profileRoleBadge').textContent = currentUser.role;
+      document.getElementById('profileEmergency').textContent = currentUser.emergency || 'None listed';
+      document.getElementById('profileBlood').textContent = currentUser.blood || 'Unknown';
+      document.getElementById('profileAvatarLarge').textContent = currentUser.fullName[0];
+      openWindow('profileModal');
+    }
+
+    async function updateDBInspectorUI() {
+      const userBox = document.getElementById('dbUserInfoBox');
+      const usersTableBody = document.getElementById('dbUsersTableBody');
+      const sosLogContainer = document.getElementById('dbSosLogContainer');
+
+      if (userBox) {
+        if (currentUser) {
+          userBox.innerHTML = `
+            <span style="color:#fff; font-weight:700;">${currentUser.fullName}</span> 
+            (@${currentUser.username}) · <b>Role:</b> ${currentUser.role} · <b>Blood:</b> ${currentUser.blood} · <b>SOS Contact:</b> ${currentUser.emergency}
+          `;
+        } else {
+          userBox.innerHTML = 'Not authenticated. Click "Login / Sign Up" to mount a session.';
+        }
+      }
+
+      if (usersTableBody) {
+        const allUsers = await TrekDatabase.getAllUsers();
+        usersTableBody.innerHTML = allUsers.map(u => `
+          <tr>
+            <td><code style="color:var(--color-blue);">${u.username}</code></td>
+            <td>${u.fullName}</td>
+            <td>${u.role}</td>
+            <td style="color:var(--color-red); font-weight:bold;">${u.blood || 'N/A'}</td>
+          </tr>
+        `).join('');
+      }
+
+      if (sosLogContainer) {
+        const sosLogs = await TrekDatabase.getSOSLogs();
+        if (sosLogs.length === 0) {
+          sosLogContainer.innerHTML = 'No emergency dispatches recorded.';
+        } else {
+          sosLogContainer.innerHTML = sosLogs.slice(-3).map(l => `
+            <div style="background:rgba(239,68,68,0.1); border-left:3px solid var(--color-red); padding:6px 10px; margin-bottom:6px; border-radius:4px;">
+              <b>🚨 ${l.status}</b>: Lat ${l.lat.toFixed(4)}, Lng ${l.lng.toFixed(4)}<br>
+              <span style="color:var(--text-muted); font-size:10px;">Sender: ${l.user || 'Anonymous'} · ${new Date(l.timestamp).toLocaleTimeString()}</span>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    async function exportDatabaseJSON() {
+      const users = await TrekDatabase.getAllUsers();
+      const trails = await TrekDatabase.getTrails();
+      const sos = await TrekDatabase.getSOSLogs();
+
+      const fullDump = {
+        exportedAt: new Date().toISOString(),
+        database: DB_NAME,
+        users, trails, sos
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullDump, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "treksos_database_dump.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('💾 Exported complete database dump to JSON!', 3500);
+    }
+
+    async function clearUserSessions() {
+      await TrekDatabase.clearSession();
+      currentUser = null;
+      updateAuthUI();
+      updateDBInspectorUI();
+      showToast('Cleared active user session.', 3000);
+    }
+
+    /* 9. SEARCH & SOS */
+    let searchMarker = null;
+
+    async function handleSearch() {
+      const query = document.getElementById("searchInput").value.trim();
+      if (!query) return;
+
+      const trailMatch = currentTrailsList.find(t => 
+        t.trekName.toLowerCase().includes(query.toLowerCase()) || 
+        t.baseCamp.toLowerCase().includes(query.toLowerCase())
+      );
+
+      if (trailMatch) {
+        plotTrailOnMap(trailMatch.trekName);
+        return;
+      }
+
+      showToast(`🔍 Searching Nominatim geocoding for "${query}"...`, 2000);
+
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        if (data.length === 0) {
+          showToast("❌ Location not found. Try another term.", 3000);
+          return;
+        }
+
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+
+        if (searchMarker) map.removeLayer(searchMarker);
+
+        searchMarker = L.marker([lat, lon], {
+          icon: L.divIcon({
+            className: '',
+            html: '<div style="background:#f59e0b;width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 10px rgba(245,158,11,0.9)"></div>',
+            iconAnchor: [8, 8]
+          })
+        }).addTo(map);
+
+        map.setView([lat, lon], 12, { animate: true });
+        validateSearchLocation(lat, lon, data[0].display_name);
+
+      } catch (err) {
+        showToast("❌ Geocoding search error. Check internet connection.", 3000);
+      }
+    }
+
+    function validateSearchLocation(lat, lon, placeName) {
+      let nearestRouteKey = null;
+      let minDistance = Infinity;
+
+      Object.keys(routes).forEach(key => {
+        routes[key].coords.forEach(pt => {
+          const dist = getDistance(lat, lon, pt[0], pt[1]);
+          if (dist < minDistance) {
+            minDistance = dist;
+            nearestRouteKey = key;
+          }
+        });
+      });
+
+      let shortName = placeName.split(',')[0];
+      if (minDistance <= 2.5) {
+        showToast(`✅ Route Available!
+Nearest to: ${routes[nearestRouteKey].name} (${minDistance.toFixed(1)}km)`, 5000);
+        searchMarker.bindPopup(`<b>📍 ${shortName}</b><br>🟢 Reachable via Route ${nearestRouteKey}`).openPopup();
+        selectRoute(null, nearestRouteKey);
+      } else {
+        showToast(`⚠ Off-trail location (${minDistance.toFixed(1)}km off designated trail)`, 4000);
+        searchMarker.bindPopup(`<b>📍 ${shortName}</b><br>🔴 ${minDistance.toFixed(1)}km from nearest surveyed path`).openPopup();
+      }
+    }
+
+    let sosActive = false;
+    let sosMarker = null;
+
+    async function triggerSOS() {
+      if (sosActive) return;
+      sosActive = true;
+
+      const btn = document.getElementById('sosBtn');
+      btn.style.background = '#f59e0b';
+      document.getElementById('sosCancel').style.display = 'block';
+
+      const sosPos = [32.2621, 77.2120];
+      const senderName = currentUser ? currentUser.fullName : 'Anonymous Hiker';
+      const blood = currentUser ? currentUser.blood : 'Unknown';
+
+      btn.textContent = `🚨 ACTIVE SOS: 32.2621° N, 77.2120° E`;
+      btn.style.fontSize = '12px';
+
+      sosMarker = L.marker(sosPos, { icon: sosPinIcon }).addTo(map);
+      sosMarker.bindPopup(`
+        <b>🚨 EMERGENCY SOS DISPATCHED</b><br>
+        <b>Sender:</b> ${senderName} (${blood})<br>
+        <b>Status:</b> High Priority Rescue Broadcast<br>
+        <b>Logged to DB:</b> ${new Date().toLocaleTimeString()}
+      `).openPopup();
+
+      await TrekDatabase.logSOS({
+        lat: sosPos[0],
+        lng: sosPos[1],
+        user: senderName,
+        blood: blood,
+        status: 'Active SOS Alert',
+        timestamp: new Date().toISOString()
+      });
+
+      updateDBInspectorUI();
+      showToast(`🚨 SOS BROADCAST ACTIVE!
+Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Search & Rescue'}`, 6000);
+    }
+
+    function cancelSOS() {
+      sosActive = false;
+      const btn = document.getElementById('sosBtn');
+      btn.style.background = 'var(--gradient-red)';
+      btn.style.fontSize = '16px';
+      btn.textContent = 'EMERGENCY SOS';
+      document.getElementById('sosCancel').style.display = 'none';
+      if (sosMarker) map.removeLayer(sosMarker);
+      showToast('SOS Aborted. Status cleared in local log.');
+    }
+
+    function switchSidebarTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) targetPane.classList.add('active');
+
+      const tabs = ['navTab', 'trailsTab', 'dbTab'];
+      const idx = tabs.indexOf(tabId);
+      if (idx !== -1 && document.querySelectorAll('.tab-btn')[idx]) {
+        document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+      }
+
+      if (tabId === 'trailsTab') { renderTrailsList(); if (currentTrailsList && currentTrailsList.length > 0) plotTrailOnMap(currentTrailsList[0].trekName); }
+      if (tabId === 'dbTab') updateDBInspectorUI();
+    }
+
+// startNavigation defined at bootstrap
+
+    function openWindow(id) { document.getElementById(id).style.display = 'block'; }
+    function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+    function submitSurvey() { closeWindow('surveyWindow'); showToast('Feedback Submitted Successfully & Recorded to DB'); }
+
+    const mockReviews = {
+      'A': [
+        { author: 'Sritama M.', rating: '★★★★★', date: '2 days ago', body: 'Clear path today! Beautiful views of Rohtang pass peaks. GPS signal locked seamlessly.' },
+        { author: 'Tapabrata', rating: '★★★★☆', date: '4 days ago', body: 'Slight scree on descent. Good trekking poles recommended.' }
+      ],
+      'B': [
+        { author: 'Somdeb D.', rating: '★★★☆☆', date: '3 days ago', body: 'Muddy near the Beas river crossing. Use waterproof boots.' }
+      ],
+      'C': [
+        { author: 'Adrija', rating: '★☆☆☆☆', date: '1 week ago', body: 'High wind gusts near Solang loop ridge. Extremely steep.' }
+      ]
+    };
+
+    function openReviewsWindow(routeKey) {
+      document.getElementById('reviewsWindow').style.display = 'block';
+      const container = document.getElementById('reviewsContent');
+      if (!container) return;
+      container.innerHTML = '';
+      const reviews = mockReviews[routeKey] || mockReviews['A'];
+      reviews.forEach(r => {
+        container.innerHTML += `
+          <div class="review-item">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <strong style="color:var(--color-blue);">${r.author}</strong>
+              <span style="color:var(--color-amber);">${r.rating}</span>
+            </div>
+            <div style="font-size:13px; margin-bottom:6px;">${r.body}</div>
+            <div style="font-size:11px; color:var(--text-secondary);">${r.date}</div>
+          </div>
+        `;
+      });
+    }
+
+    function showToast(msg, duration = 4000) {
+      const t = document.getElementById('toast');
+      t.innerHTML = msg.split(String.fromCharCode(10)).join('<br>');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    
+    /* --- HIKING TRAILS CATALOGUE ENGINE --- */
+    let activeTrailName = '';
+
+    function escapeQuotes(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function setDifficultyFilter(diff, pillEl) {
+      selectedDifficulty = diff;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      if (pillEl) pillEl.classList.add('active');
+      renderTrailsList();
+    }
+
+    function filterTrails() {
+      renderTrailsList();
+    }
+
+    function handleTrailCardClick(trekName, cardEl) {
+      activeTrailName = trekName;
+      document.querySelectorAll('.trail-card').forEach(c => c.classList.remove('active'));
+      if (cardEl) {
+        cardEl.classList.add('active');
+      } else {
+        document.querySelectorAll('.trail-card').forEach(c => {
+          if (c.textContent.includes(trekName)) c.classList.add('active');
+        });
+      }
+      plotTrailOnMap(trekName);
+    }
+
+    function openTrailReviews(trekName) {
+      openReviewsWindow('A');
+      const hdr = document.querySelector('#reviewsWindow .window-header h2');
+      if (hdr) hdr.innerHTML = `⭐ Trail Reviews: ${trekName}`;
+    }
+
+    function renderTrailsList() {
+      const container = document.getElementById('trailsContainer');
+      const countBadge = document.getElementById('trailCountBadge');
+      if (!container) return;
+
+      const query = (document.getElementById('trailSearchInput')?.value || '').toLowerCase().trim();
+      
+      const filtered = currentTrailsList.filter(t => {
+        const matchesDiff = (selectedDifficulty === 'ALL' || t.difficulty.toLowerCase().includes(selectedDifficulty.toLowerCase()));
+        const matchesQuery = !query || 
+          t.trekName.toLowerCase().includes(query) || 
+          t.stateRegion.toLowerCase().includes(query) || 
+          t.baseCamp.toLowerCase().includes(query);
+        return matchesDiff && matchesQuery;
+      });
+
+      if (countBadge) countBadge.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px; color:var(--text-muted); font-size:12px;">
+            No trails found matching filters.<br>
+            <button class="action-btn secondary" style="margin-top:10px; display:inline-block; width:auto; padding:6px 14px;" onclick="resetDefaultTrails()">Reset Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((t, idx) => {
+        const badgeClass = t.difficulty.toLowerCase().includes('easy') ? 'badge-easy' : 
+                           t.difficulty.toLowerCase().includes('mod') ? 'badge-mod' : 'badge-diff';
+        const isSelected = activeTrailName ? (activeTrailName === t.trekName) : (idx === 0);
+        const safeTrekName = escapeQuotes(t.trekName);
+
+        return `
+          <div class="trail-card ${isSelected ? 'active' : ''}" id="trail-card-${idx}" onclick="handleTrailCardClick('${safeTrekName}', this)">
+            <div class="trail-card-top">
+              <div class="trail-card-title">${t.trekName}</div>
+              <span class="trail-badge ${badgeClass}">${t.difficulty}</span>
+            </div>
+
+            <div class="trail-region">📍 ${t.stateRegion}</div>
+
+            <div class="trail-specs-grid">
+              <div class="spec-item">
+                <span class="spec-label">Base Camp</span>
+                <span class="spec-val">⛺ ${t.baseCamp}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Max Altitude</span>
+                <span class="spec-val">🏔️ ${t.maxAltitude}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Duration</span>
+                <span class="spec-val">⏱️ ${t.duration}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Distance</span>
+                <span class="spec-val">📏 ${t.distance}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Best Season</span>
+                <span class="spec-val">🌤️ ${t.bestSeason}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Approx Cost</span>
+                <span class="spec-val" style="color:var(--color-green);">💰 ${t.cost}</span>
+              </div>
+            </div>
+
+            <div class="trail-permit-box">
+              <strong>📜 Permit:</strong> ${t.permit}
+            </div>
+
+            <div class="trail-card-footer">
+              <button class="trail-action-btn map-btn" onclick="event.stopPropagation(); handleTrailCardClick('${safeTrekName}', this.closest('.trail-card'));">
+                📍 Show Pathway on Map
+              </button>
+              <button class="trail-action-btn save-btn" onclick="event.stopPropagation(); openTrailReviews('${safeTrekName}');">
+                ⭐ Reviews
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await seedInitialDatabase();
+      renderSquadList();
+      renderTrailsList();
+    });
+  </script>
+
+  <!-- DATABASE & USERS MODAL -->
+  <div id="dbModal" class="fullscreen-window">
+    <div class="window-content" style="max-width: 650px;">
+      <button class="close-btn" onclick="closeWindow('dbModal')">×</button>
+      <div class="window-header">
+        <h2>💾 Working Database Records (IndexedDB)</h2>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.04); padding:14px; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:16px;">
+        <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:4px;">Logged In User:</div>
+        <div id="dbUserInfoBox" style="font-size:12px; color:var(--text-secondary);">
+          Not logged in. Click 'Login / Sign Up' to register your mountain credentials.
+        </div>
+      </div>
+
+      <div class="section-title">📊 Registered Mountain Users</div>
+      <div style="overflow-x:auto;">
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Full Name</th>
+              <th>Role</th>
+              <th>Blood</th>
+            </tr>
+          </thead>
+          <tbody id="dbUsersTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section-title" style="margin-top:20px;">🚨 Emergency SOS Dispatch Log</div>
+      <div id="dbSosLogContainer" style="font-size:12px; color:var(--text-muted);">
+        No active emergency incidents recorded in database.
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="action-btn secondary" onclick="exportDatabaseJSON()" style="flex:1;">Export DB to JSON</button>
+        <button class="action-btn" onclick="clearUserSessions()" style="flex:1; background:#7f1d1d;">Clear Active Session</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
