@@ -1788,7 +1788,7 @@
   <!-- 1. TOP ANNOUNCEMENT NOTICE BAR (INDIAHIKES STYLE) -->
   <div class="top-announcement-bar" id="announcementBar">
     <div class="announcement-content">
-      <span class="announcement-text-wrap"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> <b>Winter is coming:</b> If you haven't planned your winter trek yet, start now before the slots fill up.</span>
+      <span><b>Winter is coming:</b> If you haven't planned your winter trek yet, start now before the slots fill up.</span>
       <button class="announcement-btn" onclick="filterWinterTreks()">View Winter Treks</button>
     </div>
     <button class="announcement-close" onclick="document.getElementById('announcementBar').style.display='none'">&times;</button>
@@ -1815,36 +1815,24 @@
 
       <div class="brand-header-search">
         <input type="text" id="topNavSearch" placeholder="Search treks by name, region, difficulty etc..." oninput="syncSearchWithCatalogue(this.value)">
-        <button class="brand-search-btn" onclick="syncSearchWithCatalogue(document.getElementById('topNavSearch').value)" title="Search"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
+        <button class="brand-search-btn" onclick="syncSearchWithCatalogue(document.getElementById('topNavSearch').value)" title="Search">
+          <svg style="width:13px; height:13px; display:block;" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
       </div>
 
-      <button class="auth-btn-header" onclick="openAuthModal('login')">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
-      </button>
+      <button class="auth-btn-header" onclick="openAuthModal('login')">Login / Sign Up</button>
     </div>
   </header>
 
-    <!-- 3. SIGNATURE GOLDEN SECONDARY NAV BAR (WITH GOVT, FOREST, ROOM, GUIDE & MAP OPTIONS) -->
+      <!-- 3. SIGNATURE GOLDEN SECONDARY NAV BAR (CLEAN BOLD TYPOGRAPHY - NO ICONS) -->
   <nav class="golden-sub-nav">
     <div class="golden-sub-nav-inner">
-      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> DOCUMENTED TREKS
-      </a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGovtPermissionWindow()">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> GOVERNMENT PERMISSION
-      </a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openForestDeptWindow()">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> FOREST DEPARTMENT PASS
-      </a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openRoomWindow()">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> TREKKING ROOM (4-DIGIT PIN)
-      </a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGuideAllocationWindow()">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> ALLOCATED TOUR GUIDE
-      </a>
-      <button class="gold-map-trigger-btn" onclick="toggleMapModal(true)">
-        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Interactive Live Map & GPS
-      </button>
+      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">DOCUMENTED TREKS</a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGovtPermissionWindow()">GOVERNMENT PERMISSION</a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openForestDeptWindow()">FOREST DEPARTMENT PASS</a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openRoomWindow()">TREKKING ROOM (4-DIGIT PIN)</a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGuideAllocationWindow()">ALLOCATED TOUR GUIDE</a>
+      <button class="gold-map-trigger-btn" onclick="toggleMapModal(true)">Interactive Live Map & GPS</button>
     </div>
   </nav>
 
@@ -1852,12 +1840,12 @@
   <section class="cinematic-hero-section">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1 class="hero-title">TREKSOS TREKKING (INTREK) CLUB</h1>
+      <h1 class="hero-title">TrekSoS , your digital  trekking partner</h1>
       <p class="hero-subtitle">Bringing like-minded trekkers together, one city at a time!</p>
       <div class="hero-actions">
         <button class="hero-btn-primary" onclick="openAuthModal('register')">Request to Join</button>
         <button class="hero-btn-secondary" onclick="scrollToEditorialSection()">Explore Documented Treks</button>
-        <button class="hero-btn-map" onclick="toggleMapModal(true)">📍 Open Live Mountain Map</button>
+        <button class="hero-btn-map" onclick="toggleMapModal(true)">Open Live Mountain Map</button>
       </div>
     </div>
   </section>
@@ -1902,9 +1890,7 @@
           </div>
 
           <div id="authHeaderContainer">
-            <button class="auth-btn-header" onclick="openAuthModal('login')">
-              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
-            </button>
+            <button class="auth-btn-header" onclick="openAuthModal('login')">Login / Sign Up</button>
           </div>
         </div>
 
@@ -1926,7 +1912,7 @@
           <div class="editorial-accent-bar"></div>
         </div>
 
-        <input type="text" id="trailSearchInput" class="trail-search-box" placeholder="🔍 Search treks by name, region, or base camp..." oninput="filterTrails()">
+        
 
         <div class="filter-pills-row" style="margin-bottom:18px;">
           <div class="filter-pill active" onclick="setDifficultyFilter('ALL', this)">All Treks</div>
@@ -4371,7 +4357,7 @@ Safety Score: ${info.score}/100`, 3000);
     async function resetDefaultTrails() {
       currentTrailsList = [...DEFAULT_HIKING_DATASET];
       await TrekDatabase.saveTrails(DEFAULT_HIKING_DATASET);
-      if (document.getElementById('trailSearchInput')) document.getElementById('trailSearchInput').value = '';
+      if (document.getElementById('topNavSearch')) document.getElementById('topNavSearch').value = '';
       selectedDifficulty = 'ALL';
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
       const allPill = document.querySelector('.filter-pill');
@@ -4489,9 +4475,7 @@ Safety Score: ${info.score}/100`, 3000);
         `;
       } else {
         container.innerHTML = `
-          <button class="auth-btn-header" onclick="openAuthModal('login')">
-            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
-          </button>
+          <button class="auth-btn-header" onclick="openAuthModal('login')">Login / Sign Up</button>
         `;
       }
     }
@@ -4811,7 +4795,8 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
       const countBadge = document.getElementById('trailCountBadge');
       if (!container) return;
 
-      const query = (document.getElementById('trailSearchInput')?.value || '').toLowerCase().trim();
+      const topSearchVal = document.getElementById('topNavSearch')?.value || '';
+      const query = (window.currentSearchQuery !== undefined ? window.currentSearchQuery : topSearchVal).toLowerCase().trim();
       
       const filtered = currentTrailsList.filter(t => {
         const matchesDiff = (selectedDifficulty === 'ALL' || t.difficulty.toLowerCase().includes(selectedDifficulty.toLowerCase()));
@@ -4864,10 +4849,10 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
               <!-- HIGH-END EXPEDITION ACTION BUTTONS -->
               <div class="card-action-row">
                 <button class="card-btn-journey" onclick="event.stopPropagation(); startExpeditionJourney('${safeTrekName}');">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start Journey
+                  Start Journey
                 </button>
                 <button class="card-btn-map" onclick="event.stopPropagation(); handleTrailCardClick('${safeTrekName}', this.closest('.trail-card'));">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> Map
+                  View Map
                 </button>
               </div>
             </div>
@@ -5019,7 +5004,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
     function filterWinterTreks() {
       scrollToEditorialSection();
-      const searchBox = document.getElementById('trailSearchInput');
+      const searchBox = document.getElementById('topNavSearch');
       if (searchBox) {
         searchBox.value = 'Winter';
         filterTrails();
@@ -5028,7 +5013,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
     function syncSearchWithCatalogue(query) {
       scrollToEditorialSection();
-      const searchBox = document.getElementById('trailSearchInput');
+      const searchBox = document.getElementById('topNavSearch');
       if (searchBox) {
         searchBox.value = query;
         filterTrails();
@@ -5277,11 +5262,11 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 650px;">
       <button class="close-btn" onclick="closeWindow('govtPermissionModal')">&times;</button>
       <div class="window-header">
-        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Government Mountain Transit Permission</h2>
+        <h2>Government Mountain Transit Permission</h2>
       </div>
 
       <div class="status-banner-approved">
-        <div class="status-banner-icon"><svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="status-banner-icon"></div>
         <div>
           <div class="status-banner-title">STATUS: OFFICIAL PERMIT APPROVED & ACTIVE</div>
           <div class="status-banner-sub">Clearance granted by Ministry of Tourism & State Civil Aviation / Home Department</div>
@@ -5334,11 +5319,11 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 650px;">
       <button class="close-btn" onclick="closeWindow('forestDeptModal')">&times;</button>
       <div class="window-header">
-        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> Forest Department Wildlife Sanctuary Pass</h2>
+        <h2>Forest Department Wildlife Sanctuary Pass</h2>
       </div>
 
       <div class="status-banner-approved" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
-        <div class="status-banner-icon" style="background:#10b981; color:#fff;"><svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="status-banner-icon" style="background:#10b981; color:#fff;"></div>
         <div>
           <div class="status-banner-title" style="color:#047857;">DFO WILDLIFE ECO-PASS: ISSUED & CLEARED</div>
           <div class="status-banner-sub">Eco-tax verified by Divisional Forest Officer (DFO) Sanctuary Division</div>
@@ -5388,7 +5373,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 580px;">
       <button class="close-btn" onclick="closeWindow('roomModal')">&times;</button>
       <div class="window-header">
-        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Trekking Expedition Room (4-Digit Key)</h2>
+        <h2>Trekking Expedition Room (4-Digit Key)</h2>
       </div>
 
       <div class="room-action-tabs">
@@ -5481,7 +5466,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 620px;">
       <button class="close-btn" onclick="closeWindow('guideModal')">&times;</button>
       <div class="window-header">
-        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> Certified Mountain Tour Guide Allocation</h2>
+        <h2>Certified Mountain Tour Guide Allocation</h2>
       </div>
 
       <div class="guide-profile-card">
@@ -5571,7 +5556,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
       <!-- STEP 1 CONTAINER: TEAM ASSEMBLY (4-DIGIT KEY) -->
       <div class="wizard-step-pane" id="wizardStepPane1">
-        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Step 1: Join or Create a Trekking Team</h3>
+        <h3 class="step-pane-title">Step 1: Join or Create a Trekking Team</h3>
         <p class="step-pane-sub">Connect with fellow mountaineers using the 4-numbered squad key, or launch your own room:</p>
 
         <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:20px;">
@@ -5585,7 +5570,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
             <button class="action-btn secondary" style="padding:10px 16px; font-size:12px;" onclick="wizardRollNewPin()">Generate Key</button>
           </div>
           <div style="font-size:12px; color:#059669; font-weight:600;" id="wizardSquadStatusMsg">
-            <svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Squad Connected (Key: 4821) — 4 Members Ready for Ascent
+            Squad Connected (Key: 4821) — 4 Members Ready for Ascent
           </div>
         </div>
 
@@ -5596,7 +5581,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
       <!-- STEP 2 CONTAINER: GOVERNMENT PERMISSION FORM -->
       <div class="wizard-step-pane" id="wizardStepPane2" style="display:none;">
-        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Step 2: State Government Mountain Transit Clearance</h3>
+        <h3 class="step-pane-title">Step 2: State Government Mountain Transit Clearance</h3>
         <p class="step-pane-sub">Complete state tourism & disaster management department transit registration:</p>
 
         <div class="form-grid-2">
@@ -5638,7 +5623,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
       <!-- STEP 3 CONTAINER: FOREST DEPARTMENT CLEARANCE FORM -->
       <div class="wizard-step-pane" id="wizardStepPane3" style="display:none;">
-        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> Step 3: Forest Department & Wildlife Sanctuary Pass</h3>
+        <h3 class="step-pane-title">Step 3: Forest Department & Wildlife Sanctuary Pass</h3>
         <p class="step-pane-sub">Register environmental compliance with the Divisional Forest Officer (DFO):</p>
 
         <div class="form-grid-2">
@@ -5666,7 +5651,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
 
       <!-- STEP 4 CONTAINER: TOUR GUIDE ALLOCATION -->
       <div class="wizard-step-pane" id="wizardStepPane4" style="display:none;">
-        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> Step 4: Certified Tour Guide Allocation</h3>
+        <h3 class="step-pane-title">Step 4: Certified Tour Guide Allocation</h3>
         <p class="step-pane-sub">A certified Himalayan mountain guide has been matched and assigned to lead your expedition:</p>
 
         <div class="guide-profile-card" style="margin-bottom:20px;">
@@ -5696,8 +5681,8 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
       <!-- STEP 5 CONTAINER: COMPLETE EXPEDITION READY DASHBOARD -->
       <div class="wizard-step-pane" id="wizardStepPane5" style="display:none;">
         <div style="text-align:center; margin-bottom:16px;">
-          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:#10b981; color:#fff; font-size:24px; margin-bottom:6px;">
-            <svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:#10b981; color:#fff; font-size:24px; font-weight:bold; margin-bottom:6px;">
+            ✓
           </div>
           <h2 style="font-size:22px; font-weight:800; color:#111827; margin:0;">Expedition Ready for Departure!</h2>
           <p style="font-size:12.5px; color:#4b5563; margin-top:4px;">All permits cleared, squad connected, and guide allocated. Review your trip details below:</p>
@@ -5739,7 +5724,7 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
         </div>
 
         <button class="action-btn" style="width:100%; padding:15px; font-size:15px; font-weight:800; background:#ef4444; border-radius:10px; box-shadow:0 6px 20px rgba(239,68,68,0.4);" onclick="launchFinalExpeditionMap()">
-          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> Launch Live GPS Map & Follow Mountain Pathway
+          Launch Live GPS Map & Follow Mountain Pathway
         </button>
       </div>
 
