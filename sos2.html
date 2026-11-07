@@ -1788,7 +1788,7 @@
   <!-- 1. TOP ANNOUNCEMENT NOTICE BAR (INDIAHIKES STYLE) -->
   <div class="top-announcement-bar" id="announcementBar">
     <div class="announcement-content">
-      <span>📢 <b>Winter is coming:</b> If you haven't planned your winter trek yet, start now before the slots fill up.</span>
+      <span class="announcement-text-wrap"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> <b>Winter is coming:</b> If you haven't planned your winter trek yet, start now before the slots fill up.</span>
       <button class="announcement-btn" onclick="filterWinterTreks()">View Winter Treks</button>
     </div>
     <button class="announcement-close" onclick="document.getElementById('announcementBar').style.display='none'">&times;</button>
@@ -1815,28 +1815,35 @@
 
       <div class="brand-header-search">
         <input type="text" id="topNavSearch" placeholder="Search treks by name, region, difficulty etc..." oninput="syncSearchWithCatalogue(this.value)">
-        <button class="brand-search-btn" onclick="syncSearchWithCatalogue(document.getElementById('topNavSearch').value)">🔍</button>
+        <button class="brand-search-btn" onclick="syncSearchWithCatalogue(document.getElementById('topNavSearch').value)" title="Search"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
       </div>
 
       <button class="auth-btn-header" onclick="openAuthModal('login')">
-        <span>🔑</span> Login / Sign Up
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
       </button>
     </div>
   </header>
 
-  <!-- 3. SIGNATURE GOLDEN SECONDARY NAV BAR (INDIAHIKES STYLE) -->
+    <!-- 3. SIGNATURE GOLDEN SECONDARY NAV BAR (WITH GOVT, FOREST, ROOM, GUIDE & MAP OPTIONS) -->
   <nav class="golden-sub-nav">
     <div class="golden-sub-nav-inner">
-      <a href="#editorialTreks" class="gold-nav-link" onclick="setDifficultyFilter('ALL')">UPCOMING TREKS</a>
-      <a href="#editorialTreks" class="gold-nav-link" onclick="setDifficultyFilter('Moderate')">THEMED TREKS ▾</a>
-      <a href="#editorialTreks" class="gold-nav-link" onclick="setDifficultyFilter('ALL')">UNEXPLORED INDIA TRIPS</a>
-      <a href="#editorialTreks" class="gold-nav-link">OUTDOOR LEARNING ▾</a>
-      <a href="#editorialTreks" class="gold-nav-link">INTREK CLUB</a>
-      <a href="#editorialTreks" class="gold-nav-link">LATEST ARTICLES</a>
-      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">DOCUMENTED TREKS ▾</a>
-      <a href="#editorialTreks" class="gold-nav-link">WEATHER UPDATES</a>
+      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> DOCUMENTED TREKS
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGovtPermissionWindow()">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> GOVERNMENT PERMISSION
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openForestDeptWindow()">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> FOREST DEPARTMENT PASS
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openRoomWindow()">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> TREKKING ROOM (4-DIGIT PIN)
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGuideAllocationWindow()">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> ALLOCATED TOUR GUIDE
+      </a>
       <button class="gold-map-trigger-btn" onclick="toggleMapModal(true)">
-        <span>🗺️</span> Interactive Live Map & GPS
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Interactive Live Map & GPS
       </button>
     </div>
   </nav>
@@ -1896,7 +1903,7 @@
 
           <div id="authHeaderContainer">
             <button class="auth-btn-header" onclick="openAuthModal('login')">
-              <span>🔑</span> Login / Sign Up
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
             </button>
           </div>
         </div>
@@ -4483,7 +4490,7 @@ Safety Score: ${info.score}/100`, 3000);
       } else {
         container.innerHTML = `
           <button class="auth-btn-header" onclick="openAuthModal('login')">
-            <span>🔑</span> Login / Sign Up
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2 2-3 3-2-2 3-3 2-2 3-3 3.5-3.5a2.12 2.12 0 0 1 3 0Z"/></svg> Login / Sign Up
           </button>
         `;
       }
@@ -4834,10 +4841,11 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
         const cleanRegion = (t.stateRegion || '').split('(')[0].trim();
         const shortDesc = t.summary || `A scenic ${t.difficulty.toLowerCase()} trek starting from ${t.baseCamp} with panoramic high-altitude views.`;
 
-        return `
+                return `
           <div class="trail-card ${isSelected ? 'active' : ''}" id="trail-card-${idx}" onclick="handleTrailCardClick('${safeTrekName}', this)">
             <div class="trail-card-image-wrap">
               <img src="${imgUrl}" alt="${t.trekName}" class="trail-card-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700&auto=format&fit=crop&q=80'">
+              <span class="trail-card-difficulty-badge diff-${t.difficulty.toLowerCase().substring(0,3)}">${t.difficulty}</span>
             </div>
             
             <div class="trail-card-body">
@@ -4851,6 +4859,16 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
                   <em>${cleanRegion}</em>
                 </span>
                 <span class="meta-price">₹${(t.cost || '').replace(/[^0-9,-]/g, '')}</span>
+              </div>
+
+              <!-- HIGH-END EXPEDITION ACTION BUTTONS -->
+              <div class="card-action-row">
+                <button class="card-btn-journey" onclick="event.stopPropagation(); startExpeditionJourney('${safeTrekName}');">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start Journey
+                </button>
+                <button class="card-btn-map" onclick="event.stopPropagation(); handleTrailCardClick('${safeTrekName}', this.closest('.trail-card'));">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> Map
+                </button>
               </div>
             </div>
           </div>
@@ -5017,6 +5035,189 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
       }
     }
 
+    
+    /* ==========================================================================
+       COMPLETE EXPEDITION JOURNEY CONTROLLERS & STEP-BY-STEP WORKFLOW
+       ========================================================================== */
+    let currentExpeditionTrek = null;
+    let expeditionRoomCode = '4821';
+    let expeditionGovtPermitId = 'IND-UT-2026-8942';
+    let expeditionForestPassId = 'DFO/WL-HIM-6031';
+
+    const GUIDE_ROSTER = {
+      "Uttarakhand": {
+        name: "Narendra Singh Rawat",
+        title: "Chief Alpine Expedition Guide · NIM Uttarkashi",
+        bio: "Specialist in Garhwal High Pass traverses, snow summit safety, and wilderness emergency trauma care.",
+        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
+        radio: "146.520 MHz"
+      },
+      "Himachal": {
+        name: "Tenzin Norbu",
+        title: "High Altitude Specialist · HMI Darjeeling Gold Medalist",
+        bio: "12 years guiding across Kullu, Spiti and Kinnaur snow walls. Expert in glacier rope travel and rapid weather forecasts.",
+        photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
+        radio: "146.550 MHz"
+      },
+      "Ladakh": {
+        name: "Stanzin Dorje",
+        title: "Zanskar Ice & High Plateau Master · IMF Licensed",
+        bio: "Veteran Zanskari guide with 16 seasons navigating frozen river ice conditions and high altitude passes.",
+        photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80",
+        radio: "146.580 MHz"
+      },
+      "Sikkim": {
+        name: "Pemba Sherpa",
+        title: "Kanchenjunga Sector Lead · IMF High Altitude Leader",
+        bio: "Certified expedition lead with extensive experience on Dzongri ridge, Goechala pass, and Singalila frontiers.",
+        photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&auto=format&fit=crop&q=80",
+        radio: "146.510 MHz"
+      }
+    };
+
+    function startExpeditionJourney(trekName) {
+      const trail = currentTrailsList.find(t => t.trekName === trekName) || currentTrailsList[0];
+      currentExpeditionTrek = trail;
+
+      // Update Wizard Header
+      document.getElementById('wizardTrekNameDisplay').textContent = trail.trekName;
+      document.getElementById('wizardTrekMetaDisplay').textContent = `${trail.stateRegion} · Base: ${trail.baseCamp} · Max Alt: ${trail.maxAltitude}`;
+      document.getElementById('wizardTrekPriceDisplay').textContent = `₹${(trail.cost || '').replace(/[^0-9,-]/g, '')}`;
+
+      // Update inputs in forms
+      const regionKey = trail.stateRegion.includes('Himachal') ? 'Himachal' :
+                        trail.stateRegion.includes('Ladakh') ? 'Ladakh' :
+                        (trail.stateRegion.includes('Sikkim') || trail.stateRegion.includes('Bengal')) ? 'Sikkim' : 'Uttarakhand';
+      
+      const guideData = GUIDE_ROSTER[regionKey] || GUIDE_ROSTER["Uttarakhand"];
+      document.getElementById('wGuideName').textContent = guideData.name;
+      document.getElementById('wGuideTitle').textContent = guideData.title;
+      document.getElementById('wGuideBio').textContent = guideData.bio;
+      document.getElementById('wGuidePhoto').src = guideData.photo;
+
+      document.getElementById('wGovtStateDept').value = `${trail.stateRegion.split('(')[0].trim()} Tourism & Disaster Dept`;
+      document.getElementById('wGovtBaseCamp').value = `${trail.baseCamp} Expedition Checkpoint`;
+      document.getElementById('wForestSanctuary').value = `${trail.baseCamp} Wildlife Eco-Division`;
+
+      // Start at Step 1
+      goToWizardStep(1);
+      openWindow('journeyWizardModal');
+    }
+
+    function goToWizardStep(stepNum) {
+      for (let i = 1; i <= 5; i++) {
+        const pane = document.getElementById(`wizardStepPane${i}`);
+        const indicator = document.getElementById(`stepIndicator${i}`);
+        if (pane) pane.style.display = (i === stepNum) ? 'block' : 'none';
+        if (indicator) {
+          indicator.classList.toggle('active', i === stepNum);
+          indicator.classList.toggle('completed', i < stepNum);
+        }
+      }
+    }
+
+    function wizardValidatePin() {
+      const p1 = document.getElementById('wPin1').value;
+      const p2 = document.getElementById('wPin2').value;
+      const p3 = document.getElementById('wPin3').value;
+      const p4 = document.getElementById('wPin4').value;
+      expeditionRoomCode = `${p1}${p2}${p3}${p4}` || '4821';
+      document.getElementById('wizardSquadStatusMsg').innerHTML = `✅ Connected to Room Key: <b>${expeditionRoomCode}</b> — Squad Verified`;
+      showToast(`Joined Trekking Team using Key: ${expeditionRoomCode}`, 3000);
+    }
+
+    function wizardRollNewPin() {
+      const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
+      expeditionRoomCode = randomCode;
+      document.getElementById('wPin1').value = randomCode[0];
+      document.getElementById('wPin2').value = randomCode[1];
+      document.getElementById('wPin3').value = randomCode[2];
+      document.getElementById('wPin4').value = randomCode[3];
+      document.getElementById('wizardSquadStatusMsg').innerHTML = `✅ Generated New Squad Key: <b>${expeditionRoomCode}</b> — You are Expedition Leader`;
+      showToast(`New 4-digit Squad Key created: ${expeditionRoomCode}`, 3000);
+    }
+
+    function submitWizardGovtPermit() {
+      expeditionGovtPermitId = `IND-${(currentExpeditionTrek?.stateRegion || 'HIM').substring(0,2).toUpperCase()}-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      showToast(`✅ Government Mountain Transit Clearance Approved! (Permit: ${expeditionGovtPermitId})`, 3500);
+      goToWizardStep(3);
+    }
+
+    function submitWizardForestPass() {
+      expeditionForestPassId = `DFO/WL-${Math.floor(1000 + Math.random() * 9000)}`;
+      showToast(`✅ Forest Department Sanctuary Eco-Pass Issued! (Seal: ${expeditionForestPassId})`, 3500);
+      goToWizardStep(4);
+    }
+
+    function launchFinalExpeditionMap() {
+      closeWindow('journeyWizardModal');
+      showToast(`🚀 Launching Live Expedition Map for ${currentExpeditionTrek?.trekName}...`, 3000);
+      if (currentExpeditionTrek) {
+        plotTrailOnMap(currentExpeditionTrek.trekName);
+      }
+      toggleMapModal(true);
+    }
+
+    /* DIRECT NAV BAR MODAL TRIGGERS */
+    function openGovtPermissionWindow() {
+      if (currentExpeditionTrek) {
+        document.getElementById('govtSectorDisplay').textContent = `${currentExpeditionTrek.trekName} (${currentExpeditionTrek.stateRegion})`;
+      }
+      document.getElementById('govtPermitIdDisplay').textContent = expeditionGovtPermitId;
+      document.getElementById('govtSquadCodeDisplay').textContent = `KEY-${expeditionRoomCode}`;
+      openWindow('govtPermissionModal');
+    }
+
+    function openForestDeptWindow() {
+      if (currentExpeditionTrek) {
+        document.getElementById('forestSanctuaryDisplay').textContent = `${currentExpeditionTrek.baseCamp} Forest Wildlife Division`;
+      }
+      document.getElementById('forestPassSerialDisplay').textContent = expeditionForestPassId;
+      openWindow('forestDeptModal');
+    }
+
+    function openRoomWindow() {
+      openWindow('roomModal');
+    }
+
+    function openGuideAllocationWindow() {
+      openWindow('guideModal');
+    }
+
+    function switchRoomTab(tab) {
+      document.getElementById('joinRoomTabBtn').classList.toggle('active', tab === 'join');
+      document.getElementById('createRoomTabBtn').classList.toggle('active', tab === 'create');
+      document.getElementById('joinRoomSection').style.display = (tab === 'join') ? 'block' : 'none';
+      document.getElementById('createRoomSection').style.display = (tab === 'create') ? 'block' : 'none';
+    }
+
+    function autoFocusNext(el, nextId) {
+      if (el.value.length >= 1 && nextId) {
+        const nextEl = document.getElementById(nextId);
+        if (nextEl) nextEl.focus();
+      }
+    }
+
+    function validatePinAuto() {
+      const pin = `${document.getElementById('pin1').value}${document.getElementById('pin2').value}${document.getElementById('pin3').value}${document.getElementById('pin4').value}`;
+      if (pin.length === 4) {
+        expeditionRoomCode = pin;
+        document.getElementById('currentRoomKeyDisplay').textContent = pin;
+        showToast(`Squad Key ${pin} Verified. Joined Expedition Team!`, 3000);
+      }
+    }
+
+    function handleJoinSquadByPin() {
+      validatePinAuto();
+    }
+
+    function handleCreateSquadRoom() {
+      const newKey = Math.floor(1000 + Math.random() * 9000).toString();
+      document.getElementById('generatedKeyDisplay').textContent = newKey;
+      expeditionRoomCode = newKey;
+      showToast(`Created New Team Room with 4-Digit Key: ${newKey}!`, 3500);
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
       await seedInitialDatabase();
       renderSquadList();
@@ -5063,6 +5264,485 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
         <button class="action-btn secondary" onclick="exportDatabaseJSON()" style="flex:1;">Export DB to JSON</button>
         <button class="action-btn" onclick="clearUserSessions()" style="flex:1; background:#7f1d1d;">Clear Active Session</button>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       EXPEDITION WORKFLOW & GOVT / FOREST / ROOM / GUIDE WINDOWS
+       ========================================================================== -->
+
+  <!-- (i) GOVERNMENT PERMISSION STATUS WINDOW -->
+  <div id="govtPermissionModal" class="fullscreen-window">
+    <div class="window-content editorial-modal-card" style="max-width: 650px;">
+      <button class="close-btn" onclick="closeWindow('govtPermissionModal')">&times;</button>
+      <div class="window-header">
+        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Government Mountain Transit Permission</h2>
+      </div>
+
+      <div class="status-banner-approved">
+        <div class="status-banner-icon"><svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div>
+          <div class="status-banner-title">STATUS: OFFICIAL PERMIT APPROVED & ACTIVE</div>
+          <div class="status-banner-sub">Clearance granted by Ministry of Tourism & State Civil Aviation / Home Department</div>
+        </div>
+      </div>
+
+      <div class="permit-details-grid">
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Application ID</span>
+          <span class="permit-detail-val" id="govtPermitIdDisplay">IND-UT-2026-8942</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Transit Sector</span>
+          <span class="permit-detail-val" id="govtSectorDisplay">Himalayan Alpine Corridor</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Leader / Applicant</span>
+          <span class="permit-detail-val" id="govtApplicantDisplay">Sritama Mondal</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Emergency Radio VHF</span>
+          <span class="permit-detail-val">146.520 MHz (Rescue Stn)</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Squad Room Code</span>
+          <span class="permit-detail-val" id="govtSquadCodeDisplay">KEY-4821</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Validity</span>
+          <span class="permit-detail-val">Active Expedition Duration</span>
+        </div>
+      </div>
+
+      <div class="official-seal-box">
+        <div style="font-size: 11px; color: #4b5563; line-height: 1.4;">
+          <b>Official Verification Seal:</b> Certified digital transit pass issued under the Indian Mountain Expeditions Act. All members must carry original photo ID and maintain scheduled morning/evening VHF radio contact with base station.
+        </div>
+        <div class="official-stamp-badge">VERIFIED & APPROVED</div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button class="action-btn" onclick="showToast('Government permit PDF downloaded to device storage.'); closeWindow('govtPermissionModal');">Download Digital Permit PDF</button>
+        <button class="action-btn secondary" onclick="closeWindow('govtPermissionModal')">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (ii) FOREST DEPARTMENT ECO-ZONE CLEARANCE WINDOW -->
+  <div id="forestDeptModal" class="fullscreen-window">
+    <div class="window-content editorial-modal-card" style="max-width: 650px;">
+      <button class="close-btn" onclick="closeWindow('forestDeptModal')">&times;</button>
+      <div class="window-header">
+        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> Forest Department Wildlife Sanctuary Pass</h2>
+      </div>
+
+      <div class="status-banner-approved" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
+        <div class="status-banner-icon" style="background:#10b981; color:#fff;"><svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div>
+          <div class="status-banner-title" style="color:#047857;">DFO WILDLIFE ECO-PASS: ISSUED & CLEARED</div>
+          <div class="status-banner-sub">Eco-tax verified by Divisional Forest Officer (DFO) Sanctuary Division</div>
+        </div>
+      </div>
+
+      <div class="permit-details-grid">
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">DFO Pass Serial No.</span>
+          <span class="permit-detail-val" id="forestPassSerialDisplay">DFO/WL-HIM-6031</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Sanctuary Reserve</span>
+          <span class="permit-detail-val" id="forestSanctuaryDisplay">Govind Pashu Vihar Eco-Zone</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Eco-Development Tax</span>
+          <span class="permit-detail-val" style="color:#059669;">Paid (₹150 / trekker)</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Plastic Policy</span>
+          <span class="permit-detail-val">Zero-Tolerance Waste Audit</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Campfire Regulations</span>
+          <span class="permit-detail-val">Prohibited above 2,500m</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Flora/Fauna Corridor</span>
+          <span class="permit-detail-val">Protected Wildlife Zone</span>
+        </div>
+      </div>
+
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px; font-size: 11px; color: #166534; margin: 16px 0; line-height: 1.4;">
+        <b>Eco-Sanctuary Guidelines:</b> Non-biodegradable plastics must be registered at the entry forest check-post and audited upon exit. Forest Department rangers maintain daily check-posts along high meadow trails.
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="action-btn" style="background:#059669;" onclick="showToast('Forest Department DFO Pass receipt downloaded.'); closeWindow('forestDeptModal');">Download Eco-Pass Receipt</button>
+        <button class="action-btn secondary" onclick="closeWindow('forestDeptModal')">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (iii) TREKKING ROOM WINDOW (JOIN 4-DIGIT PIN / CREATE ROOM) -->
+  <div id="roomModal" class="fullscreen-window">
+    <div class="window-content editorial-modal-card" style="max-width: 580px;">
+      <button class="close-btn" onclick="closeWindow('roomModal')">&times;</button>
+      <div class="window-header">
+        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Trekking Expedition Room (4-Digit Key)</h2>
+      </div>
+
+      <div class="room-action-tabs">
+        <button class="room-tab-btn active" id="joinRoomTabBtn" onclick="switchRoomTab('join')">Join Existing Team</button>
+        <button class="room-tab-btn" id="createRoomTabBtn" onclick="switchRoomTab('create')">Create New Team</button>
+      </div>
+
+      <!-- JOIN ROOM TAB -->
+      <div id="joinRoomSection">
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.4;">
+          Enter the <b>4-Numbered Key</b> provided by your Expedition Leader to connect with your trekking squad:
+        </p>
+
+        <div class="pin-entry-container">
+          <input type="text" maxlength="1" class="pin-digit" id="pin1" value="4" oninput="autoFocusNext(this, 'pin2')">
+          <input type="text" maxlength="1" class="pin-digit" id="pin2" value="8" oninput="autoFocusNext(this, 'pin3')">
+          <input type="text" maxlength="1" class="pin-digit" id="pin3" value="2" oninput="autoFocusNext(this, 'pin4')">
+          <input type="text" maxlength="1" class="pin-digit" id="pin4" value="1" oninput="validatePinAuto()">
+        </div>
+
+        <button class="action-btn" style="width:100%; margin-top:16px;" onclick="handleJoinSquadByPin()">
+          Join Trekking Team with Key
+        </button>
+
+        <div id="joinedTeamRoster" style="margin-top:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px;">
+          <div style="font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:8px;">Active Squad Members in Room (Key: <span id="currentRoomKeyDisplay">4821</span>)</div>
+          <div class="member-roster-row">
+            <div class="roster-avatar">S</div>
+            <div>
+              <div class="roster-name">Sritama Mondal <span class="badge-role">Lead Trekker</span></div>
+              <div class="roster-status">Online · GPS Signal Locked</div>
+            </div>
+          </div>
+          <div class="member-roster-row">
+            <div class="roster-avatar" style="background:#3b82f6;">T</div>
+            <div>
+              <div class="roster-name">Tapabrata <span class="badge-role">Alpine Scout</span></div>
+              <div class="roster-status">Online · In Base Camp</div>
+            </div>
+          </div>
+          <div class="member-roster-row">
+            <div class="roster-avatar" style="background:#f59e0b;">S</div>
+            <div>
+              <div class="roster-name">Somdeb <span class="badge-role">Medic</span></div>
+              <div class="roster-status">Connected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE ROOM TAB -->
+      <div id="createRoomSection" style="display:none;">
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.4;">
+          Launch a new expedition room. A unique <b>4-numbered key</b> will be generated for your squad to join:
+        </p>
+
+        <div class="form-group">
+          <label style="font-size:12px; font-weight:700; color:#111827;">Expedition Squad Name</label>
+          <input type="text" id="newSquadNameInput" class="form-control" value="Himalayan Ridge Pioneers">
+        </div>
+
+        <div class="form-group">
+          <label style="font-size:12px; font-weight:700; color:#111827;">Your Expedition Role</label>
+          <select id="newSquadRoleInput" class="form-control">
+            <option value="Expedition Leader">Expedition Leader</option>
+            <option value="Lead Navigator">Lead Navigator</option>
+            <option value="Mountain Medic">Mountain Medic</option>
+          </select>
+        </div>
+
+        <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:8px; padding:12px; text-align:center; margin-bottom:16px;">
+          <div style="font-size:11px; font-weight:700; color:#92400e; text-transform:uppercase;">Generated 4-Digit Squad Key</div>
+          <div style="font-size:32px; font-weight:900; color:#78350f; letter-spacing:8px; font-family:monospace;" id="generatedKeyDisplay">7429</div>
+          <div style="font-size:11px; color:#b45309; margin-top:4px;">Share this 4-digit code with your teammates to let them join this room.</div>
+        </div>
+
+        <button class="action-btn" style="width:100%;" onclick="handleCreateSquadRoom()">
+          Create Room & Host Expedition
+        </button>
+      </div>
+
+      <button class="action-btn secondary" style="width:100%; margin-top:12px;" onclick="closeWindow('roomModal')">
+        Close Window
+      </button>
+    </div>
+  </div>
+
+  <!-- (iv) ALLOCATED TOUR GUIDE WINDOW -->
+  <div id="guideModal" class="fullscreen-window">
+    <div class="window-content editorial-modal-card" style="max-width: 620px;">
+      <button class="close-btn" onclick="closeWindow('guideModal')">&times;</button>
+      <div class="window-header">
+        <h2><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> Certified Mountain Tour Guide Allocation</h2>
+      </div>
+
+      <div class="guide-profile-card">
+        <div class="guide-avatar-wrap">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80" alt="Guide Photo" class="guide-img" id="guidePhotoDisplay">
+          <span class="guide-verified-badge">IMF Certified</span>
+        </div>
+
+        <div class="guide-info">
+          <h3 class="guide-name" id="guideNameDisplay">Narendra Singh Rawat</h3>
+          <div class="guide-title" id="guideTitleDisplay">Chief Alpine Expedition Guide · NIM Uttarkashi</div>
+          <div class="guide-rating">★★★★★ <span>4.9 / 5.0 (148 Himalayan Expeditions Led)</span></div>
+          <p class="guide-bio" id="guideBioDisplay">
+            Certified Mountain Guide by Nehru Institute of Mountaineering (NIM). Specialized in high-altitude glacier traverses, sub-zero weather emergency response, and wilderness first-aid management.
+          </p>
+        </div>
+      </div>
+
+      <div class="permit-details-grid" style="margin-top:16px;">
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Guide VHF Channel</span>
+          <span class="permit-detail-val" id="guideRadioDisplay">146.520 MHz</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Satellite Communicator</span>
+          <span class="permit-detail-val">Garmin inReach #9041</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Oxygen Cylinder Unit</span>
+          <span class="permit-detail-val" style="color:#059669;">Verified Onboard</span>
+        </div>
+        <div class="permit-detail-item">
+          <span class="permit-detail-label">Language Fluency</span>
+          <span class="permit-detail-val">Hindi, English, Garhwali</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button class="action-btn" onclick="showToast('Direct VHF audio radio link connected with Guide.'); closeWindow('guideModal');">Connect with Guide</button>
+        <button class="action-btn secondary" onclick="closeWindow('guideModal')">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (v) COMPLETE STEP-BY-STEP EXPEDITION JOURNEY WIZARD -->
+  <div id="journeyWizardModal" class="fullscreen-window">
+    <div class="window-content editorial-modal-card" style="max-width: 720px;">
+      <button class="close-btn" onclick="closeWindow('journeyWizardModal')">&times;</button>
+      
+      <!-- Stepper Indicator -->
+      <div class="wizard-stepper">
+        <div class="step-item active" id="stepIndicator1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Trekking Team</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="stepIndicator2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Govt Permit</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="stepIndicator3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Forest Pass</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="stepIndicator4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Tour Guide</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="stepIndicator5">
+          <div class="step-circle">5</div>
+          <div class="step-label">Trip Ready</div>
+        </div>
+      </div>
+
+      <!-- Current Selected Trek Overview Header -->
+      <div class="wizard-trek-header">
+        <div>
+          <span class="wizard-trek-label">SELECTED EXPEDITION JOURNEY</span>
+          <h2 class="wizard-trek-name" id="wizardTrekNameDisplay">Kedarkantha Winter Summit Trek</h2>
+          <div class="wizard-trek-meta" id="wizardTrekMetaDisplay">Uttarakhand · Sankri Base Camp · Max Alt: 12,500 ft (3,810 m)</div>
+        </div>
+        <div class="wizard-trek-price" id="wizardTrekPriceDisplay">₹8,500</div>
+      </div>
+
+      <!-- STEP 1 CONTAINER: TEAM ASSEMBLY (4-DIGIT KEY) -->
+      <div class="wizard-step-pane" id="wizardStepPane1">
+        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Step 1: Join or Create a Trekking Team</h3>
+        <p class="step-pane-sub">Connect with fellow mountaineers using the 4-numbered squad key, or launch your own room:</p>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:20px;">
+          <div style="font-weight:700; font-size:13px; color:#111827; margin-bottom:8px;">Enter 4-Numbered Squad Key:</div>
+          <div class="pin-entry-container" style="justify-content:flex-start; margin-bottom:12px;">
+            <input type="text" maxlength="1" class="pin-digit" id="wPin1" value="4">
+            <input type="text" maxlength="1" class="pin-digit" id="wPin2" value="8">
+            <input type="text" maxlength="1" class="pin-digit" id="wPin3" value="2">
+            <input type="text" maxlength="1" class="pin-digit" id="wPin4" value="1">
+            <button class="action-btn" style="padding:10px 20px; font-size:12px;" onclick="wizardValidatePin()">Join Squad</button>
+            <button class="action-btn secondary" style="padding:10px 16px; font-size:12px;" onclick="wizardRollNewPin()">Generate Key</button>
+          </div>
+          <div style="font-size:12px; color:#059669; font-weight:600;" id="wizardSquadStatusMsg">
+            <svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Squad Connected (Key: 4821) — 4 Members Ready for Ascent
+          </div>
+        </div>
+
+        <button class="wizard-next-btn" onclick="goToWizardStep(2)">
+          Proceed to Government Permission Form ➔
+        </button>
+      </div>
+
+      <!-- STEP 2 CONTAINER: GOVERNMENT PERMISSION FORM -->
+      <div class="wizard-step-pane" id="wizardStepPane2" style="display:none;">
+        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Step 2: State Government Mountain Transit Clearance</h3>
+        <p class="step-pane-sub">Complete state tourism & disaster management department transit registration:</p>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Lead Trekker Full Name</label>
+            <input type="text" id="wGovtName" class="form-control" value="Sritama Mondal" required>
+          </div>
+          <div class="form-group">
+            <label>Aadhaar Card / Passport No.</label>
+            <input type="text" id="wGovtId" class="form-control" value="XXXX-XXXX-9821" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>State Tourism Department</label>
+            <input type="text" id="wGovtStateDept" class="form-control" value="Uttarakhand Tourism Board" readonly>
+          </div>
+          <div class="form-group">
+            <label>Base Camp Checkpoint</label>
+            <input type="text" id="wGovtBaseCamp" class="form-control" value="Sankri Forest Station" readonly>
+          </div>
+        </div>
+
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px; margin-bottom:18px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:#166534; cursor:pointer;">
+            <input type="checkbox" checked required>
+            <span>I declare that all squad members are medically fit for high-altitude trekking above 10,000 ft.</span>
+          </label>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="action-btn secondary" style="width:120px;" onclick="goToWizardStep(1)">⬅ Back</button>
+          <button class="wizard-next-btn" style="flex:1;" onclick="submitWizardGovtPermit()">
+            Verify Government Permit & Proceed ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 CONTAINER: FOREST DEPARTMENT CLEARANCE FORM -->
+      <div class="wizard-step-pane" id="wizardStepPane3" style="display:none;">
+        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2-7 10h4l-3 6h12l-3-6h4z"/><path d="M12 18v4"/></svg> Step 3: Forest Department & Wildlife Sanctuary Pass</h3>
+        <p class="step-pane-sub">Register environmental compliance with the Divisional Forest Officer (DFO):</p>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Sanctuary Eco-Zone Division</label>
+            <input type="text" id="wForestSanctuary" class="form-control" value="Govind Wildlife Eco-Reserve" readonly>
+          </div>
+          <div class="form-group">
+            <label>Eco-Development Tax (Per Squad)</label>
+            <input type="text" class="form-control" value="₹600 (Paid for 4 Trekkers)" readonly style="color:#059669; font-weight:700;">
+          </div>
+        </div>
+
+        <div style="background:#fefce8; border:1px solid #fef08a; border-radius:8px; padding:14px; margin-bottom:18px; font-size:12px; color:#854d0e; line-height:1.4;">
+          <b>Environmental Protocol:</b> All single-use plastics must be declared at the entry outpost. Campfires are strictly restricted to designated campsite rings. All waste must be carried back to the base station for audit.
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="action-btn secondary" style="width:120px;" onclick="goToWizardStep(2)">⬅ Back</button>
+          <button class="wizard-next-btn" style="flex:1; background:#059669;" onclick="submitWizardForestPass()">
+            Issue Forest Eco-Pass & Allocate Guide ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4 CONTAINER: TOUR GUIDE ALLOCATION -->
+      <div class="wizard-step-pane" id="wizardStepPane4" style="display:none;">
+        <h3 class="step-pane-title"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><polygon points="12 14 13.5 17 17 17.5 14.5 20 15 23.5 12 22 9 23.5 9.5 20 7 17.5 10.5 17 12 14"/></svg> Step 4: Certified Tour Guide Allocation</h3>
+        <p class="step-pane-sub">A certified Himalayan mountain guide has been matched and assigned to lead your expedition:</p>
+
+        <div class="guide-profile-card" style="margin-bottom:20px;">
+          <div class="guide-avatar-wrap">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80" alt="Guide Photo" class="guide-img" id="wGuidePhoto">
+            <span class="guide-verified-badge">Assigned Guide</span>
+          </div>
+
+          <div class="guide-info">
+            <h3 class="guide-name" id="wGuideName">Narendra Singh Rawat</h3>
+            <div class="guide-title" id="wGuideTitle">Chief Alpine Guide · NIM Uttarkashi Certified</div>
+            <div class="guide-rating">★★★★★ <span>4.9 Rating (148 Expeditions Completed)</span></div>
+            <p class="guide-bio" id="wGuideBio">
+              Expert in high-altitude route navigation, avalanche safety, and mountain rescue. Carrying satellite radio and emergency oxygen canister.
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="action-btn secondary" style="width:120px;" onclick="goToWizardStep(3)">⬅ Back</button>
+          <button class="wizard-next-btn" style="flex:1;" onclick="goToWizardStep(5)">
+            Confirm Guide & View Full Trip Details ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 5 CONTAINER: COMPLETE EXPEDITION READY DASHBOARD -->
+      <div class="wizard-step-pane" id="wizardStepPane5" style="display:none;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:#10b981; color:#fff; font-size:24px; margin-bottom:6px;">
+            <svg class="ui-icon check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2 style="font-size:22px; font-weight:800; color:#111827; margin:0;">Expedition Ready for Departure!</h2>
+          <p style="font-size:12.5px; color:#4b5563; margin-top:4px;">All permits cleared, squad connected, and guide allocated. Review your trip details below:</p>
+        </div>
+
+        <div class="trip-summary-box">
+          <div class="trip-summary-row">
+            <span class="summary-lbl">Selected Trek</span>
+            <span class="summary-val" id="finalTrekTitle" style="font-size:15px; font-weight:800; color:#b91c1c;">Kedarkantha Winter Summit Trek</span>
+          </div>
+          <div class="trip-summary-row">
+            <span class="summary-lbl">Allocated Guide</span>
+            <span class="summary-val" id="finalGuideName">Narendra Singh Rawat (VHF: 146.520 MHz)</span>
+          </div>
+          <div class="trip-summary-row">
+            <span class="summary-lbl">Expedition Squad</span>
+            <span class="summary-val">Room Key: <b>4821</b> (4 Active Mountaineers)</span>
+          </div>
+          <div class="trip-summary-row">
+            <span class="summary-lbl">State Govt Permit</span>
+            <span class="summary-val" style="color:#059669;">Verified (Pass ID: IND-UT-2026-8942)</span>
+          </div>
+          <div class="trip-summary-row">
+            <span class="summary-lbl">Forest DFO Pass</span>
+            <span class="summary-val" style="color:#059669;">Cleared (DFO/WL-HIM-6031)</span>
+          </div>
+        </div>
+
+        <div style="margin:16px 0;">
+          <div style="font-size:12px; font-weight:700; color:#111827; margin-bottom:8px;">Pre-Ascent Mandatory Checklist:</div>
+          <div class="checklist-grid">
+            <label class="check-item"><input type="checkbox" checked> Microspikes / Crampons</label>
+            <label class="check-item"><input type="checkbox" checked> Trekking Poles</label>
+            <label class="check-item"><input type="checkbox" checked> Thermal Down Jacket</label>
+            <label class="check-item"><input type="checkbox" checked> 2L Insulated Hydration Flask</label>
+            <label class="check-item"><input type="checkbox" checked> Headlamp (Extra Batteries)</label>
+            <label class="check-item"><input type="checkbox" checked> Personal First-Aid / Diamox</label>
+          </div>
+        </div>
+
+        <button class="action-btn" style="width:100%; padding:15px; font-size:15px; font-weight:800; background:#ef4444; border-radius:10px; box-shadow:0 6px 20px rgba(239,68,68,0.4);" onclick="launchFinalExpeditionMap()">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> Launch Live GPS Map & Follow Mountain Pathway
+        </button>
+      </div>
+
     </div>
   </div>
 
