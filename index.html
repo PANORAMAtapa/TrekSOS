@@ -1186,9 +1186,9 @@
     .editorial-accent-bar {
       width: 100%;
       height: 3.5px;
-      background: #f59e0b;
+      background: linear-gradient(90deg, #5D4037 0%, #8D5B4C 100%);
       border-radius: 2px;
-      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 1px 3px rgba(93, 64, 55, 0.3);
     }
 
     .trail-search-box {
@@ -1206,8 +1206,8 @@
     }
 
     .trail-search-box:focus {
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+      border-color: #5D4037;
+      box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.15);
     }
 
     .filter-pills-row {
@@ -1231,10 +1231,10 @@
     }
 
     .filter-pill:hover, .filter-pill.active {
-      background: #f59e0b !important;
-      border-color: #f59e0b !important;
+      background: #5D4037 !important;
+      border-color: #5D4037 !important;
       color: #ffffff !important;
-      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 2px 8px rgba(93, 64, 55, 0.3);
     }
 
     /* MATURE HIGH-END CARDS (MATCHING REFERENCE IMAGE) */
@@ -1253,7 +1253,7 @@
     .trail-card:hover {
       transform: translateY(-4px) !important;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09) !important;
-      border-color: #f59e0b !important;
+      border-color: #5D4037 !important;
     }
 
     .trail-card.active {
@@ -1323,7 +1323,7 @@
     }
 
     .meta-dot {
-      color: #f59e0b;
+      color: #5D4037;
       font-style: normal;
       font-size: 10px;
     }
@@ -1362,10 +1362,701 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
     }
 
-  
     /* ==========================================================================
-       INDIAHIKES PORTAL ARCHITECTURE & UNIFIED WEBPAGE STYLES
+       HIGH-END FLASHCARD EXPEDITION BUTTONS & MICRO-ICONS
        ========================================================================== */
+    .card-action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .card-btn-journey {
+      flex: 1.35;
+      background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: 0 4px 12px rgba(62, 39, 35, 0.28);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card-btn-journey:hover {
+      background: linear-gradient(135deg, #6D4C41 0%, #4A2E1B 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(62, 39, 35, 0.4);
+    }
+
+    .card-btn-journey:active {
+      transform: translateY(0);
+    }
+
+    .card-btn-journey svg {
+      width: 14px;
+      height: 14px;
+      stroke: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .card-btn-map {
+      flex: 1;
+      background: #ffffff;
+      color: #374151;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.22s ease;
+    }
+
+    .card-btn-map:hover {
+      background: #f8fafc;
+      border-color: #5D4037;
+      color: #5D4037;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-btn-map svg {
+      width: 14px;
+      height: 14px;
+      stroke: #64748b;
+      flex-shrink: 0;
+      transition: stroke 0.2s;
+    }
+
+    .card-btn-map:hover svg {
+      stroke: #5D4037;
+    }
+
+    /* ==========================================================================
+       EDITORIAL MODAL CARD SYSTEM (PREMIUM WHITE CARD, BROWN ACCENTS)
+       ========================================================================== */
+    .fullscreen-window {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(15, 23, 42, 0.72) !important;
+      backdrop-filter: blur(8px) !important;
+      z-index: 5000 !important;
+      display: none;
+      overflow-y: auto !important;
+      padding: 40px 16px !important;
+      box-sizing: border-box !important;
+    }
+
+    .editorial-modal-card {
+      background: #ffffff !important;
+      color: #111827 !important;
+      border-radius: 16px !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.35) !important;
+      padding: 30px 34px !important;
+      margin: 20px auto !important;
+      position: relative !important;
+      animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      font-family: 'Outfit', sans-serif !important;
+      box-sizing: border-box !important;
+    }
+
+    @keyframes modalPopIn {
+      from { opacity: 0; transform: scale(0.96) translateY(14px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .editorial-modal-card .close-btn {
+      position: absolute !important;
+      top: 20px !important;
+      right: 22px !important;
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50% !important;
+      background: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #64748b !important;
+      font-size: 20px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      line-height: 1 !important;
+      padding: 0 !important;
+    }
+
+    .editorial-modal-card .close-btn:hover {
+      background: #fee2e2 !important;
+      color: #ef4444 !important;
+      border-color: #fca5a5 !important;
+    }
+
+    .editorial-modal-card .window-header {
+      border-bottom: 1px solid #f1f5f9 !important;
+      padding-bottom: 14px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .editorial-modal-card .window-header h2 {
+      color: #111827 !important;
+      font-size: 21px !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.4px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      margin: 0 !important;
+    }
+
+    /* Government & Forest Status Banners */
+    .status-banner-approved {
+      background: #f0fdf4 !important;
+      border: 1px solid #86efac !important;
+      border-radius: 10px !important;
+      padding: 14px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .status-banner-icon {
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 50% !important;
+      background: #16a34a !important;
+      color: #ffffff !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-weight: 800 !important;
+      font-size: 18px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .status-banner-title {
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      color: #15803d !important;
+      letter-spacing: 0.5px !important;
+      text-transform: uppercase !important;
+    }
+
+    .status-banner-sub {
+      font-size: 12px !important;
+      color: #166534 !important;
+      margin-top: 2px !important;
+    }
+
+    .permit-details-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 16px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .permit-detail-item {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 3px !important;
+    }
+
+    .permit-detail-label {
+      font-size: 10.5px !important;
+      font-weight: 700 !important;
+      color: #64748b !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+
+    .permit-detail-val {
+      font-size: 13.5px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+    }
+
+    .official-seal-box {
+      border: 1.5px dashed #cbd5e1 !important;
+      border-radius: 10px !important;
+      padding: 14px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 14px !important;
+      background: #ffffff !important;
+      margin-bottom: 20px !important;
+    }
+
+    .official-stamp-badge {
+      border: 2px solid #16a34a !important;
+      color: #16a34a !important;
+      font-weight: 900 !important;
+      font-size: 11px !important;
+      letter-spacing: 1px !important;
+      padding: 6px 12px !important;
+      border-radius: 6px !important;
+      text-transform: uppercase !important;
+      white-space: nowrap !important;
+      transform: rotate(-3deg) !important;
+    }
+
+    /* Trekking Room & 4-Digit PIN */
+    .room-action-tabs {
+      display: flex !important;
+      background: #f1f5f9 !important;
+      padding: 4px !important;
+      border-radius: 10px !important;
+      gap: 6px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .room-tab-btn {
+      flex: 1 !important;
+      padding: 10px !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      background: transparent !important;
+      color: #64748b !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+    }
+
+    .room-tab-btn.active {
+      background: #5D4037 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(93, 64, 55, 0.25) !important;
+    }
+
+    .pin-entry-container {
+      display: flex !important;
+      gap: 12px !important;
+      justify-content: center !important;
+      margin: 18px 0 !important;
+    }
+
+    .pin-digit {
+      width: 58px !important;
+      height: 64px !important;
+      text-align: center !important;
+      font-size: 26px !important;
+      font-weight: 900 !important;
+      font-family: monospace !important;
+      border: 2px solid #cbd5e1 !important;
+      border-radius: 12px !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      outline: none !important;
+      transition: all 0.2s !important;
+    }
+
+    .pin-digit:focus {
+      border-color: #5D4037 !important;
+      box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.2) !important;
+    }
+
+    .member-roster-row {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      padding: 9px 0 !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .member-roster-row:last-child {
+      border-bottom: none !important;
+    }
+
+    .roster-avatar {
+      width: 34px !important;
+      height: 34px !important;
+      border-radius: 50% !important;
+      background: #5D4037 !important;
+      color: #ffffff !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-weight: 800 !important;
+      font-size: 14px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .roster-name {
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      color: #111827 !important;
+    }
+
+    .roster-status {
+      font-size: 11px !important;
+      color: #10b981 !important;
+      font-weight: 600 !important;
+    }
+
+    .badge-role {
+      font-size: 10px !important;
+      background: #e2e8f0 !important;
+      color: #475569 !important;
+      padding: 2px 7px !important;
+      border-radius: 10px !important;
+      margin-left: 6px !important;
+      font-weight: 600 !important;
+    }
+
+    /* Guide Profile Card */
+    .guide-profile-card {
+      display: flex !important;
+      gap: 18px !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 18px !important;
+      align-items: flex-start !important;
+    }
+
+    .guide-avatar-wrap {
+      position: relative !important;
+      flex-shrink: 0 !important;
+    }
+
+    .guide-img {
+      width: 76px !important;
+      height: 76px !important;
+      border-radius: 50% !important;
+      object-fit: cover !important;
+      border: 3px solid #5D4037 !important;
+    }
+
+    .guide-verified-badge {
+      position: absolute !important;
+      bottom: -4px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: #16a34a !important;
+      color: #ffffff !important;
+      font-size: 9px !important;
+      font-weight: 800 !important;
+      padding: 2px 6px !important;
+      border-radius: 10px !important;
+      white-space: nowrap !important;
+    }
+
+    .guide-name {
+      font-size: 17px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 0 0 4px 0 !important;
+    }
+
+    .guide-title {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: #5D4037 !important;
+      margin-bottom: 6px !important;
+    }
+
+    .guide-rating {
+      color: #f59e0b !important;
+      font-size: 13px !important;
+      margin-bottom: 8px !important;
+    }
+
+    .guide-rating span {
+      color: #64748b !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      margin-left: 6px !important;
+    }
+
+    .guide-bio {
+      font-size: 12.5px !important;
+      color: #475569 !important;
+      line-height: 1.45 !important;
+      margin: 0 !important;
+    }
+
+    /* Step-by-Step Expedition Journey Stepper */
+    .wizard-stepper {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 24px !important;
+      padding-bottom: 18px !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .step-item {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 5px !important;
+      position: relative !important;
+      z-index: 2 !important;
+    }
+
+    .step-circle {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50% !important;
+      background: #f1f5f9 !important;
+      border: 2px solid #cbd5e1 !important;
+      color: #64748b !important;
+      font-weight: 800 !important;
+      font-size: 13px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.25s !important;
+    }
+
+    .step-item.active .step-circle {
+      background: #5D4037 !important;
+      border-color: #5D4037 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 0 4px rgba(93, 64, 55, 0.18) !important;
+    }
+
+    .step-label {
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #64748b !important;
+    }
+
+    .step-item.active .step-label {
+      color: #5D4037 !important;
+      font-weight: 800 !important;
+    }
+
+    .step-line {
+      flex: 1 !important;
+      height: 2px !important;
+      background: #e2e8f0 !important;
+      margin: -16px 8px 0 8px !important;
+    }
+
+    .wizard-trek-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 16px 20px !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      margin-bottom: 22px !important;
+    }
+
+    .wizard-trek-label {
+      font-size: 10px !important;
+      font-weight: 800 !important;
+      letter-spacing: 1px !important;
+      color: #5D4037 !important;
+      text-transform: uppercase !important;
+    }
+
+    .wizard-trek-name {
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 3px 0 !important;
+    }
+
+    .wizard-trek-meta {
+      font-size: 12px !important;
+      color: #64748b !important;
+    }
+
+    .wizard-trek-price {
+      font-size: 22px !important;
+      font-weight: 900 !important;
+      color: #5D4037 !important;
+      font-family: 'Outfit', sans-serif !important;
+    }
+
+    .step-pane-title {
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin-bottom: 6px !important;
+    }
+
+    .step-pane-sub {
+      font-size: 13px !important;
+      color: #64748b !important;
+      margin-bottom: 18px !important;
+      line-height: 1.4 !important;
+    }
+
+    .wizard-next-btn {
+      width: 100% !important;
+      background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 10px !important;
+      padding: 13px 20px !important;
+      font-size: 13.5px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.3px !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      box-shadow: 0 4px 14px rgba(62, 39, 35, 0.28) !important;
+    }
+
+    .wizard-next-btn:hover {
+      background: linear-gradient(135deg, #6D4C41 0%, #4A2E1B 100%) !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 6px 18px rgba(62, 39, 35, 0.4) !important;
+    }
+
+    .trip-summary-box {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      padding: 16px 20px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .trip-summary-row {
+      display: flex !important;
+      justify-content: space-between !important;
+      padding: 8px 0 !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      font-size: 13px !important;
+    }
+
+    .trip-summary-row:last-child {
+      border-bottom: none !important;
+    }
+
+    .summary-lbl {
+      font-weight: 700 !important;
+      color: #64748b !important;
+    }
+
+    .summary-val {
+      font-weight: 700 !important;
+      color: #0f172a !important;
+    }
+
+    .checklist-grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+
+    .check-item {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: #334155 !important;
+      background: #f8fafc !important;
+      padding: 8px 12px !important;
+      border-radius: 8px !important;
+      border: 1px solid #e2e8f0 !important;
+      cursor: pointer !important;
+    }
+
+    /* Modal Action Buttons & Forms */
+    .editorial-modal-card .action-btn {
+      background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 9px !important;
+      padding: 11px 20px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+    }
+
+    .editorial-modal-card .action-btn:hover {
+      background: linear-gradient(135deg, #6D4C41 0%, #4A2E1B 100%) !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3) !important;
+    }
+
+    .editorial-modal-card .action-btn.secondary {
+      background: #ffffff !important;
+      color: #475569 !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+
+    .editorial-modal-card .action-btn.secondary:hover {
+      background: #f8fafc !important;
+      color: #0f172a !important;
+      border-color: #94a3b8 !important;
+    }
+
+    .editorial-modal-card .form-control {
+      width: 100% !important;
+      padding: 10px 14px !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      font-size: 13px !important;
+      font-family: inherit !important;
+      color: #0f172a !important;
+      background: #ffffff !important;
+      outline: none !important;
+      transition: border-color 0.2s !important;
+      box-sizing: border-box !important;
+    }
+
+    .editorial-modal-card .form-control:focus {
+      border-color: #5D4037 !important;
+      box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.15) !important;
+    }
+
+    .editorial-modal-card .form-grid-2 {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 14px !important;
+      margin-bottom: 14px !important;
+    }
+
+    .editorial-modal-card .form-group {
+      margin-bottom: 14px !important;
+    }
+
+    .editorial-modal-card .form-group label {
+      display: block !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      color: #334155 !important;
+      margin-bottom: 6px !important;
+    }
     body {
       overflow-y: auto !important;
       overflow-x: hidden !important;
@@ -1452,14 +2143,14 @@
     }
 
     .brand-logo-text span {
-      color: #f59e0b;
+      color: #5D4037;
     }
 
     .brand-logo-sub {
       font-size: 9px;
       font-weight: 800;
       letter-spacing: 1.5px;
-      color: #f59e0b;
+      color: #5D4037;
       margin-top: 3px;
     }
 
@@ -1480,7 +2171,7 @@
     }
 
     .nav-item:hover {
-      color: #f59e0b;
+      color: #5D4037;
     }
 
     .brand-header-search {
@@ -1495,9 +2186,9 @@
     }
 
     .brand-header-search:focus-within {
-      border-color: #f59e0b;
+      border-color: #5D4037;
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.15);
     }
 
     .brand-header-search input {
@@ -1511,7 +2202,7 @@
     }
 
     .brand-search-btn {
-      background: #84cc16;
+      background: #5D4037;
       border: none;
       width: 28px;
       height: 28px;
@@ -1521,21 +2212,23 @@
       justify-content: center;
       cursor: pointer;
       font-size: 12px;
-      transition: transform 0.2s;
+      transition: all 0.2s;
     }
 
     .brand-search-btn:hover {
+      background: #3E2723;
       transform: scale(1.08);
     }
 
-    /* 3. SIGNATURE GOLDEN NAV BAR */
+    /* 3. SIGNATURE MOUNTAIN BROWN NAV BAR */
     .golden-sub-nav {
-      background: #f8bc04;
-      padding: 10px 24px;
+      background: #4A2E1B; /* Rich Luxury Mountain Leather Brown */
+      padding: 8px 24px;
       position: sticky;
       top: 68px;
       z-index: 1998;
-      box-shadow: 0 4px 12px rgba(248, 188, 4, 0.25);
+      box-shadow: 0 4px 18px rgba(46, 26, 12, 0.3);
+      border-bottom: 2px solid #361F10;
     }
 
     .golden-sub-nav-inner {
@@ -1544,7 +2237,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -1554,41 +2247,67 @@
     }
 
     .gold-nav-link {
-      color: #111827;
+      color: #FDFBF7;
       text-decoration: none;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
       white-space: nowrap;
-      transition: opacity 0.2s;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 6px;
     }
 
     .gold-nav-link:hover {
-      opacity: 0.75;
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .gold-nav-link svg {
+      width: 14px;
+      height: 14px;
+      stroke: #d7ccc8;
+      transition: stroke 0.2s;
+      flex-shrink: 0;
+    }
+
+    .gold-nav-link:hover svg {
+      stroke: #ffffff;
     }
 
     .gold-map-trigger-btn {
-      background: #111827;
+      background: #2b1810;
       color: #ffffff;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.25);
       padding: 6px 16px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 11.5px;
+      font-weight: 700;
       letter-spacing: 0.5px;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
       white-space: nowrap;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .gold-map-trigger-btn:hover {
-      background: #000000;
+      background: #180e0a;
+      border-color: #ffffff;
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .gold-map-trigger-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: #4ade80;
+      flex-shrink: 0;
     }
 
     /* 4. CINEMATIC HERO SECTION */
@@ -1644,8 +2363,8 @@
     }
 
     .hero-btn-primary {
-      background: #f8bc04;
-      color: #111827;
+      background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+      color: #ffffff;
       border: none;
       padding: 14px 28px;
       border-radius: 6px;
@@ -1653,12 +2372,13 @@
       font-weight: 800;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(248, 188, 4, 0.4);
+      box-shadow: 0 4px 20px rgba(62, 39, 35, 0.45);
     }
 
     .hero-btn-primary:hover {
-      background: #f59e0b;
+      background: linear-gradient(135deg, #6D4C41 0%, #4A2E1B 100%);
       transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(62, 39, 35, 0.6);
     }
 
     .hero-btn-secondary {
@@ -1824,15 +2544,33 @@
     </div>
   </header>
 
-      <!-- 3. SIGNATURE GOLDEN SECONDARY NAV BAR (CLEAN BOLD TYPOGRAPHY - NO ICONS) -->
+  <!-- 3. SIGNATURE MOUNTAIN BROWN SECONDARY NAV BAR WITH SLEEK MICRO-ICONS -->
   <nav class="golden-sub-nav">
     <div class="golden-sub-nav-inner">
-      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">DOCUMENTED TREKS</a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGovtPermissionWindow()">GOVERNMENT PERMISSION</a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openForestDeptWindow()">FOREST DEPARTMENT PASS</a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openRoomWindow()">TREKKING ROOM (4-DIGIT PIN)</a>
-      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGuideAllocationWindow()">ALLOCATED TOUR GUIDE</a>
-      <button class="gold-map-trigger-btn" onclick="toggleMapModal(true)">Interactive Live Map & GPS</button>
+      <a href="#editorialTreks" class="gold-nav-link" onclick="scrollToEditorialSection()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+        <span>DOCUMENTED TREKS</span>
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGovtPermissionWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>GOVERNMENT PERMISSION</span>
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openForestDeptWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+        <span>FOREST DEPARTMENT PASS</span>
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openRoomWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>TREKKING ROOM (4-DIGIT PIN)</span>
+      </a>
+      <a href="javascript:void(0)" class="gold-nav-link" onclick="openGuideAllocationWindow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>ALLOCATED TOUR GUIDE</span>
+      </a>
+      <button class="gold-map-trigger-btn" onclick="toggleMapModal(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+        <span>Interactive Live Map & GPS</span>
+      </button>
     </div>
   </nav>
 
@@ -1840,8 +2578,8 @@
   <section class="cinematic-hero-section">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1 class="hero-title">TrekSoS , your digital  trekking partner</h1>
-      <p class="hero-subtitle">Bringing like-minded trekkers together, one city at a time!</p>
+      <h1 class="hero-title">WELCOME TO TREKSOS</h1>
+      <p class="hero-subtitle">your digital trekking partner</p>
       <div class="hero-actions">
         <button class="hero-btn-primary" onclick="openAuthModal('register')">Request to Join</button>
         <button class="hero-btn-secondary" onclick="scrollToEditorialSection()">Explore Documented Treks</button>
@@ -4849,10 +5587,12 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
               <!-- HIGH-END EXPEDITION ACTION BUTTONS -->
               <div class="card-action-row">
                 <button class="card-btn-journey" onclick="event.stopPropagation(); startExpeditionJourney('${safeTrekName}');">
-                  Start Journey
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                  <span>Start Journey</span>
                 </button>
                 <button class="card-btn-map" onclick="event.stopPropagation(); handleTrailCardClick('${safeTrekName}', this.closest('.trail-card'));">
-                  View Map
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+                  <span>View Map</span>
                 </button>
               </div>
             </div>
@@ -5262,11 +6002,16 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 650px;">
       <button class="close-btn" onclick="closeWindow('govtPermissionModal')">&times;</button>
       <div class="window-header">
-        <h2>Government Mountain Transit Permission</h2>
+        <h2>
+          <svg style="width:20px;height:20px;stroke:#5D4037;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Government Mountain Transit Permission</span>
+        </h2>
       </div>
 
       <div class="status-banner-approved">
-        <div class="status-banner-icon"></div>
+        <div class="status-banner-icon">
+          <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
         <div>
           <div class="status-banner-title">STATUS: OFFICIAL PERMIT APPROVED & ACTIVE</div>
           <div class="status-banner-sub">Clearance granted by Ministry of Tourism & State Civil Aviation / Home Department</div>
@@ -5319,11 +6064,16 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 650px;">
       <button class="close-btn" onclick="closeWindow('forestDeptModal')">&times;</button>
       <div class="window-header">
-        <h2>Forest Department Wildlife Sanctuary Pass</h2>
+        <h2>
+          <svg style="width:20px;height:20px;stroke:#059669;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+          <span>Forest Department Wildlife Sanctuary Pass</span>
+        </h2>
       </div>
 
       <div class="status-banner-approved" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
-        <div class="status-banner-icon" style="background:#10b981; color:#fff;"></div>
+        <div class="status-banner-icon" style="background:#10b981; color:#fff;">
+          <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
         <div>
           <div class="status-banner-title" style="color:#047857;">DFO WILDLIFE ECO-PASS: ISSUED & CLEARED</div>
           <div class="status-banner-sub">Eco-tax verified by Divisional Forest Officer (DFO) Sanctuary Division</div>
@@ -5373,7 +6123,10 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 580px;">
       <button class="close-btn" onclick="closeWindow('roomModal')">&times;</button>
       <div class="window-header">
-        <h2>Trekking Expedition Room (4-Digit Key)</h2>
+        <h2>
+          <svg style="width:20px;height:20px;stroke:#5D4037;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Trekking Expedition Room (4-Digit Key)</span>
+        </h2>
       </div>
 
       <div class="room-action-tabs">
@@ -5466,7 +6219,10 @@ Saved in local Database · Notifying ${currentUser?.emergency || 'Mountain Searc
     <div class="window-content editorial-modal-card" style="max-width: 620px;">
       <button class="close-btn" onclick="closeWindow('guideModal')">&times;</button>
       <div class="window-header">
-        <h2>Certified Mountain Tour Guide Allocation</h2>
+        <h2>
+          <svg style="width:20px;height:20px;stroke:#5D4037;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          <span>Certified Mountain Tour Guide Allocation</span>
+        </h2>
       </div>
 
       <div class="guide-profile-card">
